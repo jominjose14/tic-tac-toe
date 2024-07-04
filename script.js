@@ -22,20 +22,14 @@ let print = () => {
         console.log(`${grid[i][0]} | ${grid[i][1]} | ${grid[i][2]}`);
     }
 }
-let checkWin = (player) => {
-    let win = false;
+let checkWin = () => {
     slots ++;
     if((grid[y][0] == grid[y][1] && grid[y][1] == grid[y][2]) || (grid[0][x] == grid[1][x] && grid[1][x] == grid[2][x])) 
-        win = true;
-    if(x == y)
-        if(grid[0][0] == grid[1][1] && grid[1][1] == grid[2][2])
-            win = true;
-    if(x + y == 2)
-        if(grid[2][0] == grid[1][1] && grid[1][1] == grid[0][2])
-            win = true;
-    if(win) 
-        score[player] ++;
-    return win;
+        return true;
+    if(x == y && grid[0][0] == grid[1][1] && grid[1][1] == grid[2][2])
+        return true;
+    if(x + y == 2 && grid[2][0] == grid[1][1] && grid[1][1] == grid[0][2])
+        return true;
 }
 
 let play = () => {
@@ -44,7 +38,8 @@ let play = () => {
         getInput();
         cross();
         print();
-        if(checkWin(0)) {
+        if(checkWin()) {
+            score[0] ++;
             alert("First player wins!");
             break;
         }
@@ -56,7 +51,8 @@ let play = () => {
         getInput();
         circle();
         print();
-        if(checkWin(1)) {
+        if(checkWin()) {
+            score[1] ++;
             alert("Second player wins!");
             break;
         }
@@ -66,6 +62,9 @@ let play = () => {
 
 while(true) {
     play();
-    console.log(`Player 1's score is ${score[0]}.\n
-                 Player 2's score is ${score[1]}.`);
+    console.log(`Player 1's score is ${score[0]}.
+               \nPlayer 2's score is ${score[1]}.`);
+    for(x = 0; x < 3; x++)
+        for(y = 0; y < 3; y++)
+            grid[x][y] = ' ';
 }
