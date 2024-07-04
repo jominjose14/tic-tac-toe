@@ -1,25 +1,33 @@
 const grid = [
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0]
+    [' ', ' ', ' '],
+    [' ', ' ', ' '],
+    [' ', ' ', ' ']
 ];
 
 let x ,y;
 let score = [0, 0];
+let slots = 0;
 
-let cross = () => grid[x][y] = 1;
-let circle = () => grid[x][y] = 2;
+let cross = () => grid[y][x] = 'X';
+let circle = () => grid[y][x] = 'O';
 let getInput = () => {
     do {
         x = prompt("Enter X index");
         y = prompt("Enter Y index");
-    }while(grid[x][y]);
+    }while(grid[y][x] != ' ');
 }
-checkWin = (player) => {
+let print = () => {
+    console.log('\n')
+    for(let i = 0; i < 3; i++) {
+        console.log(`${grid[i][0]} | ${grid[i][1]} | ${grid[i][2]}`);
+    }
+}
+let checkWin = (player) => {
     let win = false;
-    if((grid[x][0] == grid[x][1] && grid[x][1] == grid[x][2]) || (grid[0][y] == grid[1][y] && grid[1][y] == grid[2][y]))
+    slots ++;
+    if((grid[y][0] == grid[y][1] && grid[y][1] == grid[y][2]) || (grid[0][x] == grid[1][x] && grid[1][x] == grid[2][x])) 
         win = true;
-    if(x = y)
+    if(x == y)
         if(grid[0][0] == grid[1][1] && grid[1][1] == grid[2][2])
             win = true;
     if(x + y == 2)
@@ -30,18 +38,34 @@ checkWin = (player) => {
     return win;
 }
 
-match = () => {
-    do {
+let play = () => {
+    while(true) {
         alert("First player's turn. Input will be have to be re-entered if invalid.")
         getInput();
-        cross(x, y);
-        if(checkWin(0))
+        cross();
+        print();
+        if(checkWin(0)) {
+            alert("First player wins!");
             break;
+        }
+        if(slots == 9) {
+            alert("Draw!");
+            break;
+        }
         alert("Second player's turn. Input will be have to be re-entered if invalid.")
         getInput();
-        circle(x, y);
-        if(checkWin(1))
+        circle();
+        print();
+        if(checkWin(1)) {
+            alert("Second player wins!");
             break;
-    }while(true);
+        }
+    }
 
+}
+
+while(true) {
+    play();
+    console.log(`Player 1's score is ${score[0]}.\n
+                 Player 2's score is ${score[1]}.`);
 }
