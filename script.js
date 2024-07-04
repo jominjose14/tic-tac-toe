@@ -17,9 +17,13 @@ let getInput = () => {
     }while(grid[y][x] != ' ');
 }
 let print = () => {
-    console.log('\n')
+    console.log('\n    0   1   2');
     for(let i = 0; i < 3; i++) {
-        console.log(`${grid[i][0]} | ${grid[i][1]} | ${grid[i][2]}`);
+        let output = '';
+        output += i;
+        for(let j = 0; j < 3; j++)
+            output += (' | ' + grid[i][j]);
+        console.log(output);
     }
 }
 let checkWin = () => {
@@ -64,7 +68,7 @@ while(true) {
     play();
     console.log(`Player 1's score is ${score[0]}.
                \nPlayer 2's score is ${score[1]}.`);
-    for(x = 0; x < 3; x++)
-        for(y = 0; y < 3; y++)
+    for(let i = 0; i < 3; i++)
+        for(let j = 0; j < 3; j++)
             grid[x][y] = ' ';
 }
