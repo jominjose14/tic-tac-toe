@@ -1,0 +1,50 @@
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+#header, #footer {
+    font-family: cursive;
+    display: flex;
+    justify-content:space-around;
+}
+
+#header {
+    font-size: 8vmin;
+    margin: 3vmin 0 7vmin;
+}
+
+#footer {
+    font-size: 3vmin;
+    margin: 10vmin 0 0 0;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+#container {
+    display: flex;
+    justify-content: center;
+}
+
+#playgrid {
+    display: grid;
+    grid-template: 20vmin 20vmin 20vmin / 20vmin 20vmin 20vmin;
+}
+
+.slot {
+    border: 0 solid darkgrey;
+}
+
+.row2 {
+    border-top-width: 1vmin;
+    border-bottom-width: 1vmin;
+}
+
+.column2 {
+    border-left-width: 1vmin;
+    border-right-width: 1vmin;
+}
+

@@ -64,11 +64,11 @@ let play = () => {
 
 }
 
-while(true) {
-    play();
-    console.log(`Player 1's score is ${score[0]}.
-               \nPlayer 2's score is ${score[1]}.`);
-    for(let i = 0; i < 3; i++)
-        for(let j = 0; j < 3; j++)
-            grid[x][y] = ' ';
-}
+// while(true) {
+//     play();
+//     console.log(`Player 1's score is ${score[0]}.
+//                \nPlayer 2's score is ${score[1]}.`);
+//     for(let i = 0; i < 3; i++)
+//         for(let j = 0; j < 3; j++)
+//             grid[x][y] = ' ';
+// }
