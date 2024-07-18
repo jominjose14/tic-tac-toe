@@ -1,96 +1,70 @@
-const grid = [
-    [' ', ' ', ' '],
-    [' ', ' ', ' '],
-    [' ', ' ', ' ']
-];
-
 let x ,y;
-let score1 = 0, score2 = 0;
 let filled = 0;
 let p1turn= true;
 
-let cross = () => grid[y][x] = 'X';
-let circle = () => grid[y][x] = 'O';
-let print = () => {
-    console.log('\n    0   1   2');
-    for(let i = 0; i < 3; i++) {
-        let output = '';
-        output += i;
-        for(let j = 0; j < 3; j++)
-            output += (' | ' + grid[i][j]);
-        console.log(output);
-    }
+const main = () => {
+    const slots = document.querySelectorAll(".slot");
+    slots.forEach((slot) => {
+        slot.addEventListener("click", (e) => {
+            play(Number(slot.getAttribute("data-row")), Number(slot.getAttribute("data-col")), e);
+        });
+    });
 }
-let clear = () => {
-    for(let i = 0; i < 3; i++)
-        for(let j = 0; j < 3; j++) 
-            grid[i][j] = ' ';
+const reset = () => {
     filled = 0;
+    const slots = document.querySelectorAll(".slot");
     slots.forEach((slot) => {
         slot.textContent = '';
     }); 
+    p1turn = true;
 }
-let checkWin = () => {
-    if((grid[y][0] == grid[y][1] && grid[y][1] == grid[y][2]) || (grid[0][x] == grid[1][x] && grid[1][x] == grid[2][x])) 
+const checkWin = () => {
+    if(document.querySelector(`[data-row="${y}"][data-col="0"]`).textContent == document.querySelector(`[data-row="${y}"][data-col="1"]`).textContent
+    && document.querySelector(`[data-row="${y}"][data-col="1"]`).textContent == document.querySelector(`[data-row="${y}"][data-col="2"]`).textContent
+    || document.querySelector(`[data-row="0"][data-col="${x}"]`).textContent == document.querySelector(`[data-row="1"][data-col="${x}"]`).textContent
+    && document.querySelector(`[data-row="1"][data-col="${x}"]`).textContent == document.querySelector(`[data-row="2"][data-col="${x}"]`).textContent)
         return true;
-    if(x == y && grid[0][0] == grid[1][1] && grid[1][1] == grid[2][2])
+    else if(x == y
+    && document.querySelector(`[data-row="0"][data-col="0"]`).textContent == document.querySelector(`[data-row="1"][data-col="1"]`).textContent
+    && document.querySelector(`[data-row="1"][data-col="1"]`).textContent == document.querySelector(`[data-row="2"][data-col="2"]`).textContent)
         return true;
-    if(x + y == 2 && grid[2][0] == grid[1][1] && grid[1][1] == grid[0][2])
+    else if(x + y == 2
+    && document.querySelector(`[data-row="2"][data-col="0"]`).textContent == document.querySelector(`[data-row="1"][data-col="1"]`).textContent
+    && document.querySelector(`[data-row="1"][data-col="1"]`).textContent == document.querySelector(`[data-row="0"][data-col="2"]`).textContent)
         return true;
+    else
+        return false;
 }
-
-let play = (row, col, event) => {
-    if(grid[row][col] != ' ')
+const play = (row, col, event) => {
+    if(event.target.textContent != "")
         return;
     x = col;
     y = row;
     if(p1turn) {
-        cross();
         event.target.textContent = "X";
         filled ++;
-        if(checkWin()) {
-            score1++;
-            document.querySelector("#p1Score").textContent = score1;
-            p1turn = true;          
-            clear();
-            // p1 win message
-            return;
-        }
     }
     else {
-        circle();
         event.target.textContent = "O";
         filled ++;
-        if(checkWin()) {
-            score2++;
-            document.querySelector("#p2Score").textContent = score2;
-            p1turn = true;
-            clear();
-            // p2 win message
-            return;
+    }
+    if(checkWin()) {
+        if(p1turn) {
+            document.getElementById("p1Score").textContent = parseInt(document.getElementById("p1Score").textContent) + 1;
+            // win message 
         }
+        else {
+            document.getElementById("p2Score").textContent = parseInt(document.getElementById("p2Score").textContent) + 1;
+            // win message 
+        }
+        reset();
     }
-    if(filled == 9) {
+    else if(filled == 9) {
         // draw message
-        clear();
-        p1turn = true;
-        return;
+        reset();
     }
-    p1turn = !p1turn;
+    else 
+        p1turn = !p1turn;
 }
 
-const slots = document.querySelectorAll(".slot");
-slots.forEach((slot) => {
-    slot.addEventListener("click", (e) => {
-        play(Number(slot.getAttribute("data-row")), Number(slot.getAttribute("data-col")), e);
-    });
-});
-
-// while(true) {
-//     play();
-//     console.log(`Player 1's score is ${score[0]}.
-//                \nPlayer 2's score is ${score[1]}.`);
-    // for(let i = 0; i < 3; i++)
-    //     for(let j = 0; j < 3; j++)
-    //         grid[x][y] = ' ';
-// }
+main();
