@@ -5,17 +5,12 @@ const grid = [
 ];
 
 let x ,y;
-let score = [0, 0];
-let slots = 0;
+let score1 = 0, score2 = 0;
+let filled = 0;
+let p1turn= true;
 
 let cross = () => grid[y][x] = 'X';
 let circle = () => grid[y][x] = 'O';
-let getInput = () => {
-    do {
-        x = prompt("Enter X index");
-        y = prompt("Enter Y index");
-    }while(grid[y][x] != ' ');
-}
 let print = () => {
     console.log('\n    0   1   2');
     for(let i = 0; i < 3; i++) {
@@ -27,7 +22,7 @@ let print = () => {
     }
 }
 let checkWin = () => {
-    slots ++;
+    filled ++;
     if((grid[y][0] == grid[y][1] && grid[y][1] == grid[y][2]) || (grid[0][x] == grid[1][x] && grid[1][x] == grid[2][x])) 
         return true;
     if(x == y && grid[0][0] == grid[1][1] && grid[1][1] == grid[2][2])
@@ -36,33 +31,39 @@ let checkWin = () => {
         return true;
 }
 
-let play = () => {
-    while(true) {
-        alert("First player's turn. Input will be have to be re-entered if invalid.")
-        getInput();
+let play = (row, col) => {
+    if(grid[row][col] != ' ')
+        return;
+    x = col;
+    y = row;
+    if(p1turn) {
         cross();
-        print();
         if(checkWin()) {
-            score[0] ++;
-            alert("First player wins!");
-            break;
-        }
-        if(slots == 9) {
-            alert("Draw!");
-            break;
-        }
-        alert("Second player's turn. Input will be have to be re-entered if invalid.")
-        getInput();
-        circle();
-        print();
-        if(checkWin()) {
-            score[1] ++;
-            alert("Second player wins!");
-            break;
+            score1++;
+            p1turn = true;
+            // p1 win message
         }
     }
-
+    else {
+        circle();
+        if(checkWin()) {
+            score2++;
+            p1turn = true;
+            // p2 win message
+        }
+    }
+    p1turn = !p1turn;
+    if(filled == 9) {
+        // draw message
+    }
 }
+
+const slots = document.querySelectorAll(".slot");
+slots.forEach((slot) => {
+    slot.addEventListener("click", () => {
+        play(Number(slot.getAttribute("data-row")), Number(slot.getAttribute("data-col")));
+    });
+});
 
 // while(true) {
 //     play();

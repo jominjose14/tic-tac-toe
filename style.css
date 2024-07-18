@@ -1,10 +1,15 @@
 body {
     display: flex;
     flex-direction: column;
+    font-family: cursive;
+}
+
+.score {
+    font-size: 7vmin;
+    text-align: center;
 }
 
 #header, #footer {
-    font-family: cursive;
     display: flex;
     justify-content:space-around;
 }
@@ -26,7 +31,8 @@ a {
 
 #container {
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
+    align-items: center;
 }
 
 #playgrid {
@@ -38,12 +44,12 @@ a {
     border: 0 solid darkgrey;
 }
 
-.row2 {
+div[data-row="1"] {
     border-top-width: 1vmin;
     border-bottom-width: 1vmin;
 }
 
-.column2 {
+div[data-col="1"] {
     border-left-width: 1vmin;
     border-right-width: 1vmin;
 }
