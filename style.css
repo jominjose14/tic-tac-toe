@@ -42,6 +42,10 @@ a {
 
 .slot {
     border: 0 solid darkgrey;
+    font-size: 15vmin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 div[data-row="1"] {
