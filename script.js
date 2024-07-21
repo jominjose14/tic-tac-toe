@@ -1,7 +1,28 @@
+const grid = [
+    [
+        document.querySelector(`[data-row="0"][data-col="0"]`),
+        document.querySelector(`[data-row="0"][data-col="1"]`),
+        document.querySelector(`[data-row="0"][data-col="2"]`)
+    ],
+    [
+        document.querySelector(`[data-row="1"][data-col="0"]`),
+        document.querySelector(`[data-row="1"][data-col="1"]`),
+        document.querySelector(`[data-row="1"][data-col="2"]`)
+    ],
+    [
+        document.querySelector(`[data-row="2"][data-col="0"]`),
+        document.querySelector(`[data-row="2"][data-col="1"]`),
+        document.querySelector(`[data-row="2"][data-col="2"]`)
+    ]
+];
+
 let x ,y;
 let filled = 0;
 let p1turn= true;
 
+const xSound = new Audio("cross.mp3");
+const oSound = new Audio("circle.mp3");
+const lineSound = new Audio("line.mp3");
 const main = () => {
     const slots = document.querySelectorAll(".slot");
     slots.forEach((slot) => {
@@ -24,28 +45,22 @@ const reset = () => {
     p1turn = true;
 }
 const checkWin = () => {
-    if(document.querySelector(`[data-row="${y}"][data-col="0"]`).textContent == document.querySelector(`[data-row="${y}"][data-col="1"]`).textContent
-    && document.querySelector(`[data-row="${y}"][data-col="1"]`).textContent == document.querySelector(`[data-row="${y}"][data-col="2"]`).textContent)
+    if(grid[y][0].textContent == grid[y][1].textContent && grid[y][1].textContent == grid[y][2].textContent)
         {
             drawLine(y, 0);
             return true;
         }
-    if(document.querySelector(`[data-row="0"][data-col="${x}"]`).textContent == document.querySelector(`[data-row="1"][data-col="${x}"]`).textContent
-    && document.querySelector(`[data-row="1"][data-col="${x}"]`).textContent == document.querySelector(`[data-row="2"][data-col="${x}"]`).textContent)
+    else if(grid[0][x].textContent == grid[1][x].textContent && grid[1][x].textContent == grid[2][x].textContent)
         {
             drawLine(x, 1);
             return true;
         }
-    else if(x == y
-    && document.querySelector(`[data-row="0"][data-col="0"]`).textContent == document.querySelector(`[data-row="1"][data-col="1"]`).textContent
-    && document.querySelector(`[data-row="1"][data-col="1"]`).textContent == document.querySelector(`[data-row="2"][data-col="2"]`).textContent)
+    else if(x == y && grid[0][0].textContent == grid[1][1].textContent && grid[1][1].textContent == grid[2][2].textContent)
         {
             drawLine(0, 2);
             return true;
         }
-    else if(x + y == 2
-    && document.querySelector(`[data-row="2"][data-col="0"]`).textContent == document.querySelector(`[data-row="1"][data-col="1"]`).textContent
-    && document.querySelector(`[data-row="1"][data-col="1"]`).textContent == document.querySelector(`[data-row="0"][data-col="2"]`).textContent)
+    else if(x + y == 2 && grid[0][2].textContent == grid[1][1].textContent && grid[1][1].textContent == grid[2][0].textContent)
         {
             drawLine(1, 2);
             return true;
@@ -55,6 +70,7 @@ const checkWin = () => {
 }
 
 const drawLine = (position, axis) => {
+    lineSound.play();
     const line = document.querySelector("#overlay img");
     const overlay = document.querySelector("#overlay");
     switch (axis) {
@@ -129,10 +145,12 @@ const play = (row, col, event) => {
     x = col;
     y = row;
     if(p1turn) {
+        xSound.play();
         event.target.textContent = "X";
         filled ++;
     }
     else {
+        oSound.play();
         event.target.textContent = "O";
         filled ++;
     }
