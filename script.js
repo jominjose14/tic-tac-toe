@@ -12,28 +12,116 @@ const main = () => {
 }
 const reset = () => {
     filled = 0;
+    const dialog = document.querySelector("dialog");
+    dialog.removeAttribute("open");
+
     const slots = document.querySelectorAll(".slot");
     slots.forEach((slot) => {
         slot.textContent = '';
     }); 
+    const overlay = document.querySelector("#overlay");
+    overlay.style.display = "none";
     p1turn = true;
 }
 const checkWin = () => {
     if(document.querySelector(`[data-row="${y}"][data-col="0"]`).textContent == document.querySelector(`[data-row="${y}"][data-col="1"]`).textContent
-    && document.querySelector(`[data-row="${y}"][data-col="1"]`).textContent == document.querySelector(`[data-row="${y}"][data-col="2"]`).textContent
-    || document.querySelector(`[data-row="0"][data-col="${x}"]`).textContent == document.querySelector(`[data-row="1"][data-col="${x}"]`).textContent
+    && document.querySelector(`[data-row="${y}"][data-col="1"]`).textContent == document.querySelector(`[data-row="${y}"][data-col="2"]`).textContent)
+        {
+            drawLine(y, 0);
+            return true;
+        }
+    if(document.querySelector(`[data-row="0"][data-col="${x}"]`).textContent == document.querySelector(`[data-row="1"][data-col="${x}"]`).textContent
     && document.querySelector(`[data-row="1"][data-col="${x}"]`).textContent == document.querySelector(`[data-row="2"][data-col="${x}"]`).textContent)
-        return true;
+        {
+            drawLine(x, 1);
+            return true;
+        }
     else if(x == y
     && document.querySelector(`[data-row="0"][data-col="0"]`).textContent == document.querySelector(`[data-row="1"][data-col="1"]`).textContent
     && document.querySelector(`[data-row="1"][data-col="1"]`).textContent == document.querySelector(`[data-row="2"][data-col="2"]`).textContent)
-        return true;
+        {
+            drawLine(0, 2);
+            return true;
+        }
     else if(x + y == 2
     && document.querySelector(`[data-row="2"][data-col="0"]`).textContent == document.querySelector(`[data-row="1"][data-col="1"]`).textContent
     && document.querySelector(`[data-row="1"][data-col="1"]`).textContent == document.querySelector(`[data-row="0"][data-col="2"]`).textContent)
-        return true;
+        {
+            drawLine(1, 2);
+            return true;
+        }
     else
         return false;
+}
+
+const drawLine = (position, axis) => {
+    const line = document.querySelector("#overlay img");
+    const overlay = document.querySelector("#overlay");
+    switch (axis) {
+        case 0:
+            switch (position) {
+                case 0:
+                    overlay.style.display = "block";
+                    line.style.transform = "translateY(-33.33%)";
+                    break;
+
+                case 1:
+                    overlay.style.display = "block";
+                    line.style.transform = "none";
+                    break;
+                
+                case 2:
+                    overlay.style.display = "block";
+                    line.style.transform = "translateY(33.33%)";
+                    break;
+                
+                default:
+                    break;
+            }
+            break;
+            
+        case 1:
+            switch (position) {
+                case 0:
+                    overlay.style.display = "block";
+                    line.style.transform = "translateX(-33.33%) rotate(90deg)";
+                    break;
+
+                case 1:
+                    overlay.style.display = "block";
+                    line.style.transform = "rotate(90deg)";
+                    break;
+                
+                case 2:
+                    overlay.style.display = "block";
+                    line.style.transform = "translateX(33.33%) rotate(90deg)";
+                    break;
+                
+                default:
+                    break;
+            }
+            break;
+            
+        case 2:
+        switch (position) {
+            case 0:
+                overlay.style.display = "block";
+                line.style.transform = "rotate(45deg) scaleX(1.3)";
+                break;
+
+            case 1:
+                overlay.style.display = "block";
+                line.style.transform = "rotate(-45deg) scaleX(1.3)";
+                break;
+            
+            default:
+                break;
+        }
+        break;
+
+        default:
+            break;
+    }
 }
 const play = (row, col, event) => {
     if(event.target.textContent != "")
@@ -48,20 +136,24 @@ const play = (row, col, event) => {
         event.target.textContent = "O";
         filled ++;
     }
+    const dialog = document.querySelector("dialog");
     if(checkWin()) {
         if(p1turn) {
             document.getElementById("p1Score").textContent = parseInt(document.getElementById("p1Score").textContent) + 1;
-            // win message 
+            dialog.setAttribute("open", '');
+            dialog.innerText = "Player 1 scored!";
         }
         else {
             document.getElementById("p2Score").textContent = parseInt(document.getElementById("p2Score").textContent) + 1;
-            // win message 
+            dialog.setAttribute("open", '');
+            dialog.innerText = "Player 2 scored!";
         }
-        reset();
+        const timeout = setTimeout(reset, 1500);
     }
     else if(filled == 9) {
-        // draw message
-        reset();
+        dialog.setAttribute("open", '');
+        dialog.innerText = "It's a draw!";
+        const timeout = setTimeout(reset, 1500);
     }
     else 
         p1turn = !p1turn;

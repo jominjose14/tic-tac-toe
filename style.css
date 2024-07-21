@@ -1,9 +1,15 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
 body {
     display: flex;
     flex-direction: column;
     font-family: cursive;
+    justify-content: space-between;
+    font-size: 3vmin;
 }
-
 .score {
     font-size: 7vmin;
     text-align: center;
@@ -20,8 +26,7 @@ body {
 }
 
 #footer {
-    font-size: 3vmin;
-    margin: 10vmin 0 0 0;
+    margin: 10vmin 0 5vmin;
 }
 
 a {
@@ -38,23 +43,28 @@ a {
 #playgrid {
     display: grid;
     grid-template: 20vmin 20vmin 20vmin / 20vmin 20vmin 20vmin;
+    gap: 1vmin;
+    background-color: darkgrey;
+    position: relative;
+    color: rgb(70, 70, 70);
+}
+
+#overlay {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: none;
+}
+
+#overlay img {
+    width: 100%;
 }
 
 .slot {
-    border: 0 solid darkgrey;
     font-size: 15vmin;
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: white;
+    cursor: pointer;
 }
-
-div[data-row="1"] {
-    border-top-width: 1vmin;
-    border-bottom-width: 1vmin;
-}
-
-div[data-col="1"] {
-    border-left-width: 1vmin;
-    border-right-width: 1vmin;
-}
-
