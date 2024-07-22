@@ -6,7 +6,8 @@ html, body {
 body {
     display: flex;
     flex-direction: column;
-    font-family: cursive;
+    font-family: "Permanent Marker", cursive;
+    color: #3c3c3c;
     justify-content: space-between;
     font-size: 3vmin;
 }
@@ -31,7 +32,7 @@ body {
 
 a {
     text-decoration: none;
-    color: black;
+    color: #3c3c3c;
 }
 
 #container {
@@ -43,10 +44,11 @@ a {
 #playgrid {
     display: grid;
     grid-template: 20vmin 20vmin 20vmin / 20vmin 20vmin 20vmin;
+    overflow: hidden;
     gap: 1vmin;
     background-color: darkgrey;
     position: relative;
-    color: rgb(70, 70, 70);
+    color: #464646;
 }
 
 #overlay {
