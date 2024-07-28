@@ -20,9 +20,11 @@ let x ,y;
 let filled = 0;
 let p1turn= true;
 
-const xSound = new Audio("cross.mp3");
-const oSound = new Audio("circle.mp3");
-const lineSound = new Audio("line.mp3");
+const xSound = new Audio("./audio/cross.mp3");
+const oSound = new Audio("./audio/circle.mp3");
+const lineSound = new Audio("./audio/line.mp3");
+const dialog = document.querySelector("dialog");
+
 const main = () => {
     const slots = document.querySelectorAll(".slot");
     slots.forEach((slot) => {
@@ -30,12 +32,23 @@ const main = () => {
             play(Number(slot.getAttribute("data-row")), Number(slot.getAttribute("data-col")), e);
         });
     });
+    const toggles = document.querySelectorAll(".toggle");
+    toggles.forEach((toggle) => {
+        toggle.addEventListener("click", () => message());
+    });
 }
+
+const message = () => {
+    dialog.setAttribute("open", '');
+    dialog.innerText = "Coming soon";
+    setTimeout(clear, 1500);
+}
+
+const clear = () => dialog.removeAttribute("open");
+
 const reset = () => {
     filled = 0;
-    const dialog = document.querySelector("dialog");
     dialog.removeAttribute("open");
-
     const slots = document.querySelectorAll(".slot");
     slots.forEach((slot) => {
         slot.textContent = '';
@@ -44,6 +57,7 @@ const reset = () => {
     overlay.style.display = "none";
     p1turn = true;
 }
+
 const checkWin = () => {
     if(grid[y][0].textContent == grid[y][1].textContent && grid[y][1].textContent == grid[y][2].textContent)
         {
@@ -139,6 +153,7 @@ const drawLine = (position, axis) => {
             break;
     }
 }
+
 const play = (row, col, event) => {
     if(event.target.textContent != "")
         return;
@@ -154,7 +169,6 @@ const play = (row, col, event) => {
         event.target.textContent = "O";
         filled ++;
     }
-    const dialog = document.querySelector("dialog");
     if(checkWin()) {
         if(p1turn) {
             document.getElementById("p1Score").textContent = parseInt(document.getElementById("p1Score").textContent) + 1;
@@ -166,12 +180,12 @@ const play = (row, col, event) => {
             dialog.setAttribute("open", '');
             dialog.innerText = "Player 2 scored!";
         }
-        const timeout = setTimeout(reset, 1500);
+        setTimeout(reset, 1500);
     }
     else if(filled == 9) {
         dialog.setAttribute("open", '');
         dialog.innerText = "It's a draw!";
-        const timeout = setTimeout(reset, 1500);
+        setTimeout(reset, 1500);
     }
     else 
         p1turn = !p1turn;

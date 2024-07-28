@@ -4,30 +4,80 @@ html, body {
     padding: 0;
 }
 body {
-    display: flex;
     flex-direction: column;
     font-family: "Permanent Marker", cursive;
     color: #3c3c3c;
-    justify-content: space-between;
     font-size: 3vmin;
 }
+
+.title {
+    position: fixed;
+    top: 1vmin;
+    width: 100vw;
+    text-align: center;
+    font-size: 8vh;
+    z-index: -10;
+}
+
 .score {
     font-size: 7vmin;
     text-align: center;
 }
 
-#header, #footer {
+body, .footer, .header, .toggle, .container, .topCorner {
     display: flex;
-    justify-content:space-around;
 }
 
-#header {
-    font-size: 8vmin;
-    margin: 3vmin 0 7vmin;
+body, .header, .footer {
+    justify-content:space-between;
 }
 
-#footer {
-    margin: 10vmin 0 5vmin;
+.container, .toggle {
+    justify-content: space-around;
+}
+
+.header {
+    margin: 4vmin;
+    font-size: clamp(3.5vh, 5vmin, 6vmin);
+    gap: 4vmin;
+}
+
+.toggle {
+    height: clamp(4.2vh,6vmin, 7vmin);
+    width: clamp(11.9vh, 17vmin, 18vmin);
+    background-color: darkgrey;
+    padding: 1vmin;
+    cursor: pointer;
+}
+.option {
+    width: 45%;
+    height: 100%;
+}
+
+.human, .robot {
+    background-color: white;
+}
+
+/* .human {
+    background-color: darkgrey;
+} */
+
+.robot {
+    background-color: darkgrey;
+}
+
+span {
+    margin-right: 3vmin;
+    text-wrap: nowrap;
+}
+
+.icon {
+    width: 100%;
+    height: 100%;
+}
+
+.footer {
+    margin: 4vmin;
 }
 
 a {
@@ -35,10 +85,11 @@ a {
     color: #3c3c3c;
 }
 
-#container {
+.container {
     display: flex;
-    justify-content: space-around;
     align-items: center;
+    width: 100vw;
+    flex-grow: 1;
 }
 
 #playgrid {
@@ -49,6 +100,47 @@ a {
     background-color: darkgrey;
     position: relative;
     color: #464646;
+}
+
+@media screen and (max-width: 130vh) {
+    .header {
+      margin-top: 16vh;
+      margin-bottom: 5vmin;
+      justify-content: center;
+    }
+
+    .footer {
+        margin-top: 0;
+    }
+}
+
+@media screen and (max-width: 56.3vh) {
+    .container {
+        flex-direction: column;
+    }
+
+    .header {
+        margin-top: 13vh;
+        margin-bottom: 0;
+    }
+
+    #playgrid {
+        grid-template: 28vmin 28vmin 28vmin / 28vmin 28vmin 28vmin;
+        gap: 1.4vmin;
+    }
+
+    body {
+        font-size: 4.5vmin;
+    }
+    
+    .title {
+        font-size: 7vh;
+    }
+}
+
+.pName {
+    text-wrap: nowrap;
+    text-align: center;
 }
 
 #overlay {
