@@ -43,24 +43,22 @@ body, .header, .footer {
 }
 
 .toggle {
-    height: clamp(4.2vh,6vmin, 7vmin);
+    height: clamp(4.2vh, 6vmin, 7vmin);
     width: clamp(11.9vh, 17vmin, 18vmin);
     background-color: darkgrey;
     padding: 1vmin;
     cursor: pointer;
+    border-radius: 1vmin;
 }
 .option {
     width: 45%;
     height: 100%;
+    border-radius: 1vmin;
 }
 
-.human, .robot {
+.human {
     background-color: white;
 }
-
-/* .human {
-    background-color: darkgrey;
-} */
 
 .robot {
     background-color: darkgrey;
@@ -69,11 +67,6 @@ body, .header, .footer {
 span {
     margin-right: 3vmin;
     text-wrap: nowrap;
-}
-
-.icon {
-    width: 100%;
-    height: 100%;
 }
 
 .footer {
@@ -92,7 +85,7 @@ a {
     flex-grow: 1;
 }
 
-#playgrid {
+#playGrid {
     display: grid;
     grid-template: 20vmin 20vmin 20vmin / 20vmin 20vmin 20vmin;
     overflow: hidden;
@@ -124,7 +117,7 @@ a {
         margin-bottom: 0;
     }
 
-    #playgrid {
+    #playGrid {
         grid-template: 28vmin 28vmin 28vmin / 28vmin 28vmin 28vmin;
         gap: 1.4vmin;
     }

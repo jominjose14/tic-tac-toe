@@ -1,61 +1,119 @@
+const dialog = document.querySelector("dialog");
+const playGrid = document.getElementById("playGrid");
+
 const grid = [
     [
-        document.querySelector(`[data-row="0"][data-col="0"]`),
-        document.querySelector(`[data-row="0"][data-col="1"]`),
-        document.querySelector(`[data-row="0"][data-col="2"]`)
+        playGrid.querySelector('[data-row="0"][data-col="0"]'),
+        playGrid.querySelector('[data-row="0"][data-col="1"]'),
+        playGrid.querySelector('[data-row="0"][data-col="2"]')
     ],
     [
-        document.querySelector(`[data-row="1"][data-col="0"]`),
-        document.querySelector(`[data-row="1"][data-col="1"]`),
-        document.querySelector(`[data-row="1"][data-col="2"]`)
+        playGrid.querySelector('[data-row="1"][data-col="0"]'),
+        playGrid.querySelector('[data-row="1"][data-col="1"]'),
+        playGrid.querySelector('[data-row="1"][data-col="2"]')
     ],
     [
-        document.querySelector(`[data-row="2"][data-col="0"]`),
-        document.querySelector(`[data-row="2"][data-col="1"]`),
-        document.querySelector(`[data-row="2"][data-col="2"]`)
+        playGrid.querySelector('[data-row="2"][data-col="0"]'),
+        playGrid.querySelector('[data-row="2"][data-col="1"]'),
+        playGrid.querySelector('[data-row="2"][data-col="2"]')
     ]
 ];
 
-let x ,y;
+let x = null ,y = null;
 let filled = 0;
-let p1turn= true;
+let p1turn = true;
+let xBot = false, oBot = false;
+let interval = undefined;
 
 const xSound = new Audio("./audio/cross.mp3");
 const oSound = new Audio("./audio/circle.mp3");
 const lineSound = new Audio("./audio/line.mp3");
-const dialog = document.querySelector("dialog");
+const toggleSound = new Audio("./audio/toggle.mp3");
 
 const main = () => {
-    const slots = document.querySelectorAll(".slot");
+    const slots = playGrid.querySelectorAll(".slot");
     slots.forEach((slot) => {
         slot.addEventListener("click", (e) => {
-            play(Number(slot.getAttribute("data-row")), Number(slot.getAttribute("data-col")), e);
+            play(slot);
+            if(xBot && oBot)
+                interval = setInterval(bot, 1000);
+            else if((p1turn && xBot) || (!p1turn && oBot))
+                setTimeout(bot, 1000);
         });
     });
-    const toggles = document.querySelectorAll(".toggle");
-    toggles.forEach((toggle) => {
-        toggle.addEventListener("click", () => message());
-    });
+
+    const leftToggle = document.querySelector(".left > .toggle");
+    leftToggle.addEventListener("click", (e) => toggleLeft(e));
+    const rightToggle = document.querySelector(".right > .toggle");
+    rightToggle.addEventListener("click", (e) => toggleRight(e));
 }
 
-const message = () => {
-    dialog.setAttribute("open", '');
-    dialog.innerText = "Coming soon";
-    setTimeout(clear, 1500);
+const toggleLeft = (event) => {
+    toggleSound.play();
+    xBot = !xBot;
+    if(xBot) {
+        event.target.closest(".toggle").firstElementChild.style.backgroundColor = "darkgrey";
+        event.target.closest(".toggle").lastElementChild.style.backgroundColor = "white";
+        if(p1turn) {
+            bot();
+            if(oBot)
+                interval = setInterval(bot, 1000);
+        }
+    }
+
+    else {
+        clearInterval(interval);
+        event.target.closest(".toggle").firstElementChild.style.backgroundColor = "white";
+        event.target.closest(".toggle").lastElementChild.style.backgroundColor = "darkgrey";
+    }
 }
 
-const clear = () => dialog.removeAttribute("open");
+const toggleRight = (event) => {
+    toggleSound.play();
+    oBot = !oBot;
+    if(oBot) {
+        event.target.closest(".toggle").firstElementChild.style.backgroundColor = "darkgrey";
+        event.target.closest(".toggle").lastElementChild.style.backgroundColor = "white";
+        if(!p1turn) {
+            bot();
+            if(xBot)
+                interval = setInterval(bot, 1000);
+        }
+    }
+
+    else {
+        clearInterval(interval);
+        event.target.closest(".toggle").firstElementChild.style.backgroundColor = "white";
+        event.target.closest(".toggle").lastElementChild.style.backgroundColor = "darkgrey";
+    }
+}
+
+const bot = () => {
+    do {
+        const slot = playGrid.querySelector(`[data-row="${Math.floor(Math.random() * 3)}"][data-col="${Math.floor(Math.random() * 3)}"]`);
+        if(slot.innerText == '') {
+            play(slot);
+            break;
+        }
+    }while(true);
+}
 
 const reset = () => {
     filled = 0;
     dialog.removeAttribute("open");
-    const slots = document.querySelectorAll(".slot");
+    const slots = playGrid.querySelectorAll(".slot");
     slots.forEach((slot) => {
         slot.textContent = '';
     }); 
     const overlay = document.querySelector("#overlay");
     overlay.style.display = "none";
     p1turn = true;
+    if(xBot) {
+        if(oBot)
+            interval = setInterval(bot, 1000);
+        else
+            setTimeout(bot, 1000);
+    }
 }
 
 const checkWin = () => {
@@ -154,22 +212,25 @@ const drawLine = (position, axis) => {
     }
 }
 
-const play = (row, col, event) => {
-    if(event.target.textContent != "")
+const play = (slot) => {
+    if(slot.textContent != '')
         return;
-    x = col;
-    y = row;
+    // else if(p1turn && xBot || !p1turn && oBot)
+    //     return;
+    x = Number(slot.getAttribute("data-col"));
+    y = Number(slot.getAttribute("data-row"));
     if(p1turn) {
         xSound.play();
-        event.target.textContent = "X";
+        slot.textContent = "X";
         filled ++;
     }
     else {
         oSound.play();
-        event.target.textContent = "O";
+        slot.textContent = "O";
         filled ++;
     }
     if(checkWin()) {
+        clearInterval(interval);
         if(p1turn) {
             document.getElementById("p1Score").textContent = parseInt(document.getElementById("p1Score").textContent) + 1;
             dialog.setAttribute("open", '');
@@ -183,6 +244,7 @@ const play = (row, col, event) => {
         setTimeout(reset, 1500);
     }
     else if(filled == 9) {
+        clearInterval(interval);
         dialog.setAttribute("open", '');
         dialog.innerText = "It's a draw!";
         setTimeout(reset, 1500);
