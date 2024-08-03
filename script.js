@@ -34,14 +34,15 @@ const main = () => {
     const slots = playGrid.querySelectorAll(".slot");
     slots.forEach((slot) => {
         slot.addEventListener("click", () => {
-            play(slot);
             playGrid.style.pointerEvents = "none";
+            play(slot);
             if(xBot && oBot)
                 interval = setInterval(bot, 1000);
-            else if((p1turn && xBot) || (!p1turn && oBot)) {
-                setTimeout(bot, 1000);
-                playGrid.style.pointerEvents = "auto";
-            }
+            else if((p1turn && xBot) || (!p1turn && oBot))
+                setTimeout(() => {
+                    bot();
+                    playGrid.style.pointerEvents = "auto";
+                }, 1000);
             else
                 playGrid.style.pointerEvents = "auto";
         });
@@ -51,6 +52,47 @@ const main = () => {
     leftToggle.addEventListener("click", (e) => toggleLeft(e));
     const rightToggle = document.querySelector(".right > .toggle");
     rightToggle.addEventListener("click", (e) => toggleRight(e));
+}
+
+const play = (slot) => {
+    if(slot.textContent != '')
+        return;
+    x = Number(slot.getAttribute("data-col"));
+    y = Number(slot.getAttribute("data-row"));
+    if(p1turn) {
+        xSound.play();
+        slot.textContent = "X";
+        filled ++;
+    }
+    else {
+        oSound.play();
+        slot.textContent = "O";
+        filled ++;
+    }
+    if(checkWin()) {
+        clearInterval(interval);
+        playGrid.style.pointerEvents = "auto";
+        if(p1turn) {
+            document.getElementById("p1Score").textContent = parseInt(document.getElementById("p1Score").textContent) + 1;
+            dialog.setAttribute("open", '');
+            dialog.innerText = "Player 1 scored!";
+        }
+        else {
+            document.getElementById("p2Score").textContent = parseInt(document.getElementById("p2Score").textContent) + 1;
+            dialog.setAttribute("open", '');
+            dialog.innerText = "Player 2 scored!";
+        }
+        setTimeout(reset, 1500);
+    }
+    else if(filled == 9) {
+        clearInterval(interval);
+        playGrid.style.pointerEvents = "auto";
+        dialog.setAttribute("open", '');
+        dialog.innerText = "It's a draw!";
+        setTimeout(reset, 1500);
+    }
+    else 
+        p1turn = !p1turn;
 }
 
 const toggleLeft = (event) => {
@@ -116,27 +158,6 @@ const bot = () => {
     }while(true);
 }
 
-const reset = () => {
-    filled = 0;
-    dialog.removeAttribute("open");
-    const slots = playGrid.querySelectorAll(".slot");
-    slots.forEach((slot) => {
-        slot.textContent = '';
-    }); 
-    const overlay = document.querySelector("#overlay");
-    overlay.style.display = "none";
-    p1turn = true;
-    if(xBot) {
-        playGrid.style.pointerEvents = "none";
-        if(oBot)
-            interval = setInterval(bot, 1000);
-        else {
-            setTimeout(bot, 1000);
-            playGrid.style.pointerEvents = "auto";
-        }
-    }
-}
-
 const checkWin = () => {
     if(grid[y][0].textContent == grid[y][1].textContent && grid[y][1].textContent == grid[y][2].textContent)
         {
@@ -160,6 +181,29 @@ const checkWin = () => {
         }
     else
         return false;
+}
+
+const reset = () => {
+    filled = 0;
+    dialog.removeAttribute("open");
+    const slots = playGrid.querySelectorAll(".slot");
+    slots.forEach((slot) => {
+        slot.textContent = '';
+    }); 
+    const overlay = document.querySelector("#overlay");
+    overlay.style.display = "none";
+    p1turn = true;
+    if(xBot) {
+        playGrid.style.pointerEvents = "none";
+        if(oBot)
+            interval = setInterval(bot, 1000);
+        else {
+            setTimeout(() => {
+                bot();
+                playGrid.style.pointerEvents = "auto";
+            }, 1000);
+        }
+    }
 }
 
 const drawLine = (position, axis) => {
@@ -231,47 +275,6 @@ const drawLine = (position, axis) => {
         default:
             break;
     }
-}
-
-const play = (slot) => {
-    if(slot.textContent != '')
-        return;
-    x = Number(slot.getAttribute("data-col"));
-    y = Number(slot.getAttribute("data-row"));
-    if(p1turn) {
-        xSound.play();
-        slot.textContent = "X";
-        filled ++;
-    }
-    else {
-        oSound.play();
-        slot.textContent = "O";
-        filled ++;
-    }
-    if(checkWin()) {
-        clearInterval(interval);
-        playGrid.style.pointerEvents = "auto";
-        if(p1turn) {
-            document.getElementById("p1Score").textContent = parseInt(document.getElementById("p1Score").textContent) + 1;
-            dialog.setAttribute("open", '');
-            dialog.innerText = "Player 1 scored!";
-        }
-        else {
-            document.getElementById("p2Score").textContent = parseInt(document.getElementById("p2Score").textContent) + 1;
-            dialog.setAttribute("open", '');
-            dialog.innerText = "Player 2 scored!";
-        }
-        setTimeout(reset, 1500);
-    }
-    else if(filled == 9) {
-        clearInterval(interval);
-        playGrid.style.pointerEvents = "auto";
-        dialog.setAttribute("open", '');
-        dialog.innerText = "It's a draw!";
-        setTimeout(reset, 1500);
-    }
-    else 
-        p1turn = !p1turn;
 }
 
 main();
