@@ -1,0 +1,18 @@
+{
+  "name": "TIC-TAC-TOE",
+  "icons": [
+    {
+      "src": "images/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "images/favicon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#101112",
+  "display": "standalone"
+}

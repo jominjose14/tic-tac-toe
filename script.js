@@ -33,12 +33,17 @@ const toggleSound = new Audio("./audio/toggle.mp3");
 const main = () => {
     const slots = playGrid.querySelectorAll(".slot");
     slots.forEach((slot) => {
-        slot.addEventListener("click", (e) => {
+        slot.addEventListener("click", () => {
             play(slot);
+            playGrid.style.pointerEvents = "none";
             if(xBot && oBot)
                 interval = setInterval(bot, 1000);
-            else if((p1turn && xBot) || (!p1turn && oBot))
+            else if((p1turn && xBot) || (!p1turn && oBot)) {
                 setTimeout(bot, 1000);
+                playGrid.style.pointerEvents = "auto";
+            }
+            else
+                playGrid.style.pointerEvents = "auto";
         });
     });
 
@@ -55,14 +60,18 @@ const toggleLeft = (event) => {
         event.target.closest(".toggle").firstElementChild.style.backgroundColor = "darkgrey";
         event.target.closest(".toggle").lastElementChild.style.backgroundColor = "white";
         if(p1turn) {
+            playGrid.style.pointerEvents = "none";
             bot();
-            if(oBot)
+            playGrid.style.pointerEvents = "auto";
+            if(oBot) {
+                playGrid.style.pointerEvents = "none";
                 interval = setInterval(bot, 1000);
+            }
         }
     }
 
     else {
-        clearInterval(interval);
+        playGrid.style.pointerEvents = "auto";
         event.target.closest(".toggle").firstElementChild.style.backgroundColor = "white";
         event.target.closest(".toggle").lastElementChild.style.backgroundColor = "darkgrey";
     }
@@ -75,20 +84,29 @@ const toggleRight = (event) => {
         event.target.closest(".toggle").firstElementChild.style.backgroundColor = "darkgrey";
         event.target.closest(".toggle").lastElementChild.style.backgroundColor = "white";
         if(!p1turn) {
+            playGrid.style.pointerEvents = "none";
             bot();
-            if(xBot)
+            playGrid.style.pointerEvents = "auto";
+            if(xBot) {
+                playGrid.style.pointerEvents = "none";
                 interval = setInterval(bot, 1000);
+            }
         }
     }
 
     else {
-        clearInterval(interval);
+        playGrid.style.pointerEvents = "auto";
         event.target.closest(".toggle").firstElementChild.style.backgroundColor = "white";
         event.target.closest(".toggle").lastElementChild.style.backgroundColor = "darkgrey";
     }
 }
 
 const bot = () => {
+    if((p1turn && !xBot) || (!p1turn && !oBot)) {
+        playGrid.style.pointerEvents = "auto";
+        clearInterval(interval);
+        return;
+    }
     do {
         const slot = playGrid.querySelector(`[data-row="${Math.floor(Math.random() * 3)}"][data-col="${Math.floor(Math.random() * 3)}"]`);
         if(slot.innerText == '') {
@@ -109,10 +127,13 @@ const reset = () => {
     overlay.style.display = "none";
     p1turn = true;
     if(xBot) {
+        playGrid.style.pointerEvents = "none";
         if(oBot)
             interval = setInterval(bot, 1000);
-        else
+        else {
             setTimeout(bot, 1000);
+            playGrid.style.pointerEvents = "auto";
+        }
     }
 }
 
@@ -215,8 +236,6 @@ const drawLine = (position, axis) => {
 const play = (slot) => {
     if(slot.textContent != '')
         return;
-    // else if(p1turn && xBot || !p1turn && oBot)
-    //     return;
     x = Number(slot.getAttribute("data-col"));
     y = Number(slot.getAttribute("data-row"));
     if(p1turn) {
@@ -231,6 +250,7 @@ const play = (slot) => {
     }
     if(checkWin()) {
         clearInterval(interval);
+        playGrid.style.pointerEvents = "auto";
         if(p1turn) {
             document.getElementById("p1Score").textContent = parseInt(document.getElementById("p1Score").textContent) + 1;
             dialog.setAttribute("open", '');
@@ -245,6 +265,7 @@ const play = (slot) => {
     }
     else if(filled == 9) {
         clearInterval(interval);
+        playGrid.style.pointerEvents = "auto";
         dialog.setAttribute("open", '');
         dialog.innerText = "It's a draw!";
         setTimeout(reset, 1500);
