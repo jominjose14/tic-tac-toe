@@ -19,7 +19,7 @@ const grid = [
     ]
 ];
 
-let x = null ,y = null;
+let x = null ,y = null, xOld = null, yOld = null;
 let filled = 0;
 let p1turn = true;
 let xBot = false, oBot = false;
@@ -57,6 +57,8 @@ const main = () => {
 const play = (slot) => {
     if(slot.textContent != '')
         return;
+    xOld = x;
+    yOld = y;
     x = Number(slot.getAttribute("data-col"));
     y = Number(slot.getAttribute("data-row"));
     if(p1turn) {
@@ -149,13 +151,39 @@ const bot = () => {
         clearInterval(interval);
         return;
     }
+    botBasic(yOld, xOld);
+    botBasic(y, x);
+    if((p1turn && !xBot) || (!p1turn && !oBot)) {
+        playGrid.style.pointerEvents = "auto";
+        clearInterval(interval);
+        return;
+    }
     do {
-        const slot = playGrid.querySelector(`[data-row="${Math.floor(Math.random() * 3)}"][data-col="${Math.floor(Math.random() * 3)}"]`);
-        if(slot.innerText == '') {
-            play(slot);
+        const random = grid[Math.floor(Math.random() * 3)][Math.floor(Math.random() * 3)];
+        if(random.textContent == '') {
+            play(random);
             break;
         }
     }while(true);
+}
+
+const botBasic = (row, col) => {
+    if(row == null)
+        return;
+    else if(grid[row][0].textContent == grid[row][1].textContent && grid[row][2].textContent == '')
+        play(grid[row][2]);
+    else if(grid[row][1].textContent == grid[row][2].textContent && grid[row][0].textContent == '')
+        play(grid[row][0]);
+    else if(grid[row][0].textContent == grid[row][2].textContent && grid[row][1].textContent == '')
+        play(grid[row][1]);
+    else if(grid[0][col].textContent == grid[1][col].textContent && grid[2][col].textContent == '')
+        play(grid[2][col]);
+    else if(grid[1][col].textContent == grid[2][col].textContent && grid[0][col].textContent == '')
+        play(grid[0][col]);
+    else if(grid[0][col].textContent == grid[2][col].textContent && grid[1][col].textContent == '')
+        play(grid[1][col]);
+    else
+        return;
 }
 
 const checkWin = () => {
