@@ -19,10 +19,10 @@ const grid = [
     ]
 ];
 
-let x = null ,y = null, xOld = null, yOld = null;
-let filled = 0;
-let p1turn = true;
-let xBot = false, oBot = false;
+let lastMoveCol, lastMoveRow, secondLastMoveCol, secondLastMoveRow;
+let filledCount = 0;
+let isXturn = true;
+let isXbot = false, isObot = false;
 let interval = undefined;
 
 const xSound = new Audio("./audio/cross.mp3");
@@ -36,9 +36,9 @@ const main = () => {
         slot.addEventListener("click", () => {
             playGrid.style.pointerEvents = "none";
             play(slot);
-            if(xBot && oBot)
+            if(isXbot && isObot)
                 interval = setInterval(bot, 1000);
-            else if((p1turn && xBot) || (!p1turn && oBot))
+            else if((isXturn && isXbot) || (!isXturn && isObot))
                 setTimeout(() => {
                     bot();
                     playGrid.style.pointerEvents = "auto";
@@ -57,24 +57,24 @@ const main = () => {
 const play = (slot) => {
     if(slot.textContent != '')
         return;
-    xOld = x;
-    yOld = y;
-    x = Number(slot.getAttribute("data-col"));
-    y = Number(slot.getAttribute("data-row"));
-    if(p1turn) {
+    secondLastMoveCol = lastMoveCol;
+    secondLastMoveRow = lastMoveRow;
+    lastMoveCol = Number(slot.getAttribute("data-col"));
+    lastMoveRow = Number(slot.getAttribute("data-row"));
+    if(isXturn) {
         xSound.play();
         slot.textContent = "X";
-        filled ++;
+        filledCount ++;
     }
     else {
         oSound.play();
         slot.textContent = "O";
-        filled ++;
+        filledCount ++;
     }
     if(checkWin()) {
         clearInterval(interval);
         playGrid.style.pointerEvents = "auto";
-        if(p1turn) {
+        if(isXturn) {
             document.getElementById("p1Score").textContent = parseInt(document.getElementById("p1Score").textContent) + 1;
             dialog.setAttribute("open", '');
             dialog.innerText = "Player 1 scored!";
@@ -86,7 +86,7 @@ const play = (slot) => {
         }
         setTimeout(reset, 1500);
     }
-    else if(filled == 9) {
+    else if(filledCount == 9) {
         clearInterval(interval);
         playGrid.style.pointerEvents = "auto";
         dialog.setAttribute("open", '');
@@ -94,20 +94,20 @@ const play = (slot) => {
         setTimeout(reset, 1500);
     }
     else 
-        p1turn = !p1turn;
+        isXturn = !isXturn;
 }
 
 const toggleLeft = (event) => {
     toggleSound.play();
-    xBot = !xBot;
-    if(xBot) {
+    isXbot = !isXbot;
+    if(isXbot) {
         event.target.closest(".toggle").firstElementChild.style.backgroundColor = "darkgrey";
         event.target.closest(".toggle").lastElementChild.style.backgroundColor = "white";
-        if(p1turn) {
+        if(isXturn) {
             playGrid.style.pointerEvents = "none";
             bot();
             playGrid.style.pointerEvents = "auto";
-            if(oBot) {
+            if(isObot) {
                 playGrid.style.pointerEvents = "none";
                 interval = setInterval(bot, 1000);
             }
@@ -123,15 +123,15 @@ const toggleLeft = (event) => {
 
 const toggleRight = (event) => {
     toggleSound.play();
-    oBot = !oBot;
-    if(oBot) {
+    isObot = !isObot;
+    if(isObot) {
         event.target.closest(".toggle").firstElementChild.style.backgroundColor = "darkgrey";
         event.target.closest(".toggle").lastElementChild.style.backgroundColor = "white";
-        if(!p1turn) {
+        if(!isXturn) {
             playGrid.style.pointerEvents = "none";
             bot();
             playGrid.style.pointerEvents = "auto";
-            if(xBot) {
+            if(isXbot) {
                 playGrid.style.pointerEvents = "none";
                 interval = setInterval(bot, 1000);
             }
@@ -146,30 +146,27 @@ const toggleRight = (event) => {
 }
 
 const bot = () => {
-    if((p1turn && !xBot) || (!p1turn && !oBot)) {
+    if((isXturn && !isXbot) || (!isXturn && !isObot)) {
         playGrid.style.pointerEvents = "auto";
         clearInterval(interval);
         return;
     }
-    botBasic(yOld, xOld);
-    botBasic(y, x);
-    if((p1turn && !xBot) || (!p1turn && !oBot)) {
-        playGrid.style.pointerEvents = "auto";
-        clearInterval(interval);
+    if(botBasic(secondLastMoveRow, secondLastMoveCol))
         return;
-    }
-    do {
+    else if(botBasic(lastMoveRow, lastMoveCol))
+        return;
+    while(true) {
         const random = grid[Math.floor(Math.random() * 3)][Math.floor(Math.random() * 3)];
         if(random.textContent == '') {
             play(random);
             break;
         }
-    }while(true);
+    }
 }
 
 const botBasic = (row, col) => {
-    if(row == null)
-        return;
+    if(filledCount < 3)
+        return false;
     else if(grid[row][0].textContent == grid[row][1].textContent && grid[row][2].textContent == '')
         play(grid[row][2]);
     else if(grid[row][1].textContent == grid[row][2].textContent && grid[row][0].textContent == '')
@@ -182,27 +179,40 @@ const botBasic = (row, col) => {
         play(grid[0][col]);
     else if(grid[0][col].textContent == grid[2][col].textContent && grid[1][col].textContent == '')
         play(grid[1][col]);
+    else if(row == col && grid[0][0].textContent == grid[1][1].textContent && grid[2][2].textContent == '')
+        play(grid[2][2]);
+    else if(row == col && grid[1][1].textContent == grid[2][2].textContent && grid[0][0].textContent == '')
+        play(grid[0][0]);
+    else if(row == col && grid[0][0].textContent == grid[2][2].textContent && grid[1][1].textContent == '')
+        play(grid[1][1]);
+    else if(row + col == 2 && grid[0][2].textContent == grid[1][1].textContent && grid[2][0].textContent == '')
+        play(grid[2][0]);
+    else if(row + col == 2 && grid[1][1].textContent == grid[2][0].textContent && grid[0][2].textContent == '')
+        play(grid[0][2]);
+    else if(row + col == 2 && grid[0][2].textContent == grid[2][0].textContent && grid[1][1].textContent == '')
+        play(grid[1][1]);
     else
-        return;
+        return false;
+    return true;
 }
 
 const checkWin = () => {
-    if(grid[y][0].textContent == grid[y][1].textContent && grid[y][1].textContent == grid[y][2].textContent)
+    if(grid[lastMoveRow][0].textContent == grid[lastMoveRow][1].textContent && grid[lastMoveRow][1].textContent == grid[lastMoveRow][2].textContent)
         {
-            drawLine(y, 0);
+            drawLine(lastMoveRow, 0);
             return true;
         }
-    else if(grid[0][x].textContent == grid[1][x].textContent && grid[1][x].textContent == grid[2][x].textContent)
+    else if(grid[0][lastMoveCol].textContent == grid[1][lastMoveCol].textContent && grid[1][lastMoveCol].textContent == grid[2][lastMoveCol].textContent)
         {
-            drawLine(x, 1);
+            drawLine(lastMoveCol, 1);
             return true;
         }
-    else if(x == y && grid[0][0].textContent == grid[1][1].textContent && grid[1][1].textContent == grid[2][2].textContent)
+    else if(lastMoveCol == lastMoveRow && grid[0][0].textContent == grid[1][1].textContent && grid[1][1].textContent == grid[2][2].textContent)
         {
             drawLine(0, 2);
             return true;
         }
-    else if(x + y == 2 && grid[0][2].textContent == grid[1][1].textContent && grid[1][1].textContent == grid[2][0].textContent)
+    else if(lastMoveCol + lastMoveRow == 2 && grid[0][2].textContent == grid[1][1].textContent && grid[1][1].textContent == grid[2][0].textContent)
         {
             drawLine(1, 2);
             return true;
@@ -212,7 +222,7 @@ const checkWin = () => {
 }
 
 const reset = () => {
-    filled = 0;
+    filledCount = 0;
     dialog.removeAttribute("open");
     const slots = playGrid.querySelectorAll(".slot");
     slots.forEach((slot) => {
@@ -220,10 +230,10 @@ const reset = () => {
     }); 
     const overlay = document.querySelector("#overlay");
     overlay.style.display = "none";
-    p1turn = true;
-    if(xBot) {
+    isXturn = true;
+    if(isXbot) {
         playGrid.style.pointerEvents = "none";
-        if(oBot)
+        if(isObot)
             interval = setInterval(bot, 1000);
         else {
             setTimeout(() => {
