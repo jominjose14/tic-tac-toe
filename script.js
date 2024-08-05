@@ -22,7 +22,7 @@ const grid = [
 let lastMoveCol, lastMoveRow, secondLastMoveCol, secondLastMoveRow;
 let filledCount = 0;
 let isXturn = true;
-let isXbot = false, isObot = false;
+let isXbot = false, isObot = true;
 let interval = undefined;
 
 const xSound = new Audio("./audio/cross.mp3");
@@ -151,46 +151,135 @@ const bot = () => {
         clearInterval(interval);
         return;
     }
-    if(botBasic(secondLastMoveRow, secondLastMoveCol))
+    if(botBasic(secondLastMoveRow, secondLastMoveCol)) {
+        console.log("basic");
         return;
-    else if(botBasic(lastMoveRow, lastMoveCol))
-        return;
-    while(true) {
-        const random = grid[Math.floor(Math.random() * 3)][Math.floor(Math.random() * 3)];
-        if(random.textContent == '') {
-            play(random);
-            break;
-        }
     }
+    else if(botBasic(lastMoveRow, lastMoveCol)) {
+        console.log("basic");
+        return;
+    }
+    else if(botIntermediate())
+        return;
+    else
+        botRandom();
+}
+
+const botRandom = () => {
+    const randomEmpty = [];
+    for(i = 0; i < 3; i++)
+        for(j = 0; j < 3; j++)
+            if(grid[i][j].textContent == '')
+                randomEmpty.push(grid[i][j]);
+    play(randomEmpty[Math.floor(Math.random() * randomEmpty.length)]);
+    console.log("random");
+}
+
+const botIntermediate = () => {
+    if(filledCount < 2)
+        return false;
+    let botMarkCount = 0;
+    const intermediateSlots = [];
+    let emptySlots = [];
+    let i,j;
+    
+    for(i = 0; i < 3; i++) {
+        for(j = 0; j < 3; j++) {
+            if(grid[i][j].textContent == (isXturn?'O':'X'))
+                break;
+            else if(grid[i][j].textContent == '')
+                emptySlots.push(grid[i][j]);
+            else if(grid[i][j].textContent == (isXturn?'X':'O'))
+                botMarkCount++;
+        }
+        if(botMarkCount == 1 && emptySlots.length == 2)
+            intermediateSlots.push(...emptySlots);
+        botMarkCount = 0;
+        emptySlots = [];
+    }
+    
+    for(i = 0; i < 3; i++) {
+        for(j = 0; j < 3; j++) {
+            if(grid[j][i].textContent == (isXturn?'O':'X'))
+                break;
+            else if(grid[j][i].textContent == '')
+                emptySlots.push(grid[j][i]);
+            else if(grid[j][i].textContent == (isXturn?'X':'O'))
+                botMarkCount++;
+        }
+        if(botMarkCount == 1 && emptySlots.length == 2)
+            intermediateSlots.push(...emptySlots);
+        botMarkCount = 0;
+        emptySlots = [];
+    }
+    
+    for(i = 0; i < 3; i++) {
+        if(grid[i][i].textContent == (isXturn?'O':'X'))
+            break;
+        else if(grid[i][i].textContent == '')
+            emptySlots.push(grid[i][i]);
+        else if(grid[i][i].textContent == (isXturn?'X':'O'))
+            botMarkCount++;
+    }
+    if(botMarkCount == 1 && emptySlots.length == 2)
+        intermediateSlots.push(...emptySlots);
+    botMarkCount = 0;
+    emptySlots = [];
+
+    for(i = 0; i < 3; i++) {
+        if(grid[i][2 - i].textContent == (isXturn?'O':'X'))
+            break;
+        else if(grid[i][2 - i].textContent == '')
+            emptySlots.push(grid[i][2 - i]);
+        else if(grid[i][2 - i].textContent == (isXturn?'X':'O'))
+            botMarkCount++;
+    }
+    if(botMarkCount == 1 && emptySlots.length == 2)
+        intermediateSlots.push(...emptySlots);
+    botMarkCount = 0;
+    emptySlots = [];
+
+    if(intermediateSlots.length > 0) {
+        play(intermediateSlots[Math.floor(Math.random() * intermediateSlots.length)]);
+        console.log("Intermediate");
+        return true;
+    }
+    
+    return false;
 }
 
 const botBasic = (row, col) => {
     if(filledCount < 3)
         return false;
-    else if(grid[row][0].textContent == grid[row][1].textContent && grid[row][2].textContent == '')
-        play(grid[row][2]);
-    else if(grid[row][1].textContent == grid[row][2].textContent && grid[row][0].textContent == '')
-        play(grid[row][0]);
-    else if(grid[row][0].textContent == grid[row][2].textContent && grid[row][1].textContent == '')
-        play(grid[row][1]);
-    else if(grid[0][col].textContent == grid[1][col].textContent && grid[2][col].textContent == '')
-        play(grid[2][col]);
-    else if(grid[1][col].textContent == grid[2][col].textContent && grid[0][col].textContent == '')
-        play(grid[0][col]);
-    else if(grid[0][col].textContent == grid[2][col].textContent && grid[1][col].textContent == '')
-        play(grid[1][col]);
+    
     else if(row == col && grid[0][0].textContent == grid[1][1].textContent && grid[2][2].textContent == '')
         play(grid[2][2]);
     else if(row == col && grid[1][1].textContent == grid[2][2].textContent && grid[0][0].textContent == '')
         play(grid[0][0]);
     else if(row == col && grid[0][0].textContent == grid[2][2].textContent && grid[1][1].textContent == '')
         play(grid[1][1]);
+
     else if(row + col == 2 && grid[0][2].textContent == grid[1][1].textContent && grid[2][0].textContent == '')
         play(grid[2][0]);
     else if(row + col == 2 && grid[1][1].textContent == grid[2][0].textContent && grid[0][2].textContent == '')
         play(grid[0][2]);
     else if(row + col == 2 && grid[0][2].textContent == grid[2][0].textContent && grid[1][1].textContent == '')
         play(grid[1][1]);
+    
+    else if(grid[row][0].textContent == grid[row][1].textContent && grid[row][2].textContent == '')
+        play(grid[row][2]);
+    else if(grid[row][1].textContent == grid[row][2].textContent && grid[row][0].textContent == '')
+        play(grid[row][0]);
+    else if(grid[row][0].textContent == grid[row][2].textContent && grid[row][1].textContent == '')
+        play(grid[row][1]);
+
+    else if(grid[0][col].textContent == grid[1][col].textContent && grid[2][col].textContent == '')
+        play(grid[2][col]);
+    else if(grid[1][col].textContent == grid[2][col].textContent && grid[0][col].textContent == '')
+        play(grid[0][col]);
+    else if(grid[0][col].textContent == grid[2][col].textContent && grid[1][col].textContent == '')
+        play(grid[1][col]);
+
     else
         return false;
     return true;

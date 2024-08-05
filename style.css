@@ -56,12 +56,20 @@ body, .header, .footer {
     border-radius: 1vmin;
 }
 
-.human {
+.left .human {
     background-color: white;
 }
 
-.robot {
+.left .robot {
     background-color: darkgrey;
+}
+
+.right .human {
+    background-color: darkgrey;
+}
+
+.right .robot {
+    background-color: white;
 }
 
 span {
