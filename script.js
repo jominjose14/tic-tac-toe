@@ -1,4 +1,3 @@
-const dialog = document.querySelector("dialog");
 const playGrid = document.getElementById("playGrid");
 
 const grid = [
@@ -18,6 +17,12 @@ const grid = [
         playGrid.querySelector('[data-row="2"][data-col="2"]')
     ]
 ];
+
+const edges = [grid[0][1], grid[1][0], grid[1][2], grid[2][1]];
+const corners = [grid[0][0], grid[0][2], grid[2][0], grid[2][2]];
+const dialog = document.querySelector("dialog");
+const p1Score = document.getElementById("p1Score");
+const p2Score = document.getElementById("p2Score");
 
 let lastMoveCol, lastMoveRow, secondLastMoveCol, secondLastMoveRow;
 let filledCount = 0;
@@ -75,12 +80,12 @@ const play = (slot) => {
         clearInterval(interval);
         playGrid.style.pointerEvents = "auto";
         if(isXturn) {
-            document.getElementById("p1Score").textContent = parseInt(document.getElementById("p1Score").textContent) + 1;
+            p1Score.textContent = parseInt(p1Score.textContent) + 1;
             dialog.setAttribute("open", '');
             dialog.innerText = "Player 1 scored!";
         }
         else {
-            document.getElementById("p2Score").textContent = parseInt(document.getElementById("p2Score").textContent) + 1;
+            p2Score.textContent = parseInt(p2Score.textContent) + 1;
             dialog.setAttribute("open", '');
             dialog.innerText = "Player 2 scored!";
         }
@@ -145,24 +150,75 @@ const toggleRight = (event) => {
     }
 }
 
+const difficulty = (percent, difference) => {
+    if(difference >= 0)
+        return (percent + (difference * (100 - percent) / 7));
+    else
+        return (percent + (difference * percent / 7));
+}
+
 const bot = () => {
     if((isXturn && !isXbot) || (!isXturn && !isObot)) {
         playGrid.style.pointerEvents = "auto";
         clearInterval(interval);
         return;
     }
-    if(botBasic(secondLastMoveRow, secondLastMoveCol)) {
-        console.log("basic");
-        return;
+    let differ = isXturn?(parseInt(p2Score.textContent) - parseInt(p1Score.textContent)):(parseInt(p1Score.textContent) - parseInt(p2Score.textContent));
+    if(filledCount < 2) {
+        const emptyEdges = [...edges];
+        const emptyCorners = [...corners];
+
+        if(!isXturn && emptyEdges.indexOf(grid[lastMoveRow][lastMoveCol]) != -1)
+            emptyEdges.splice(emptyEdges.indexOf(grid[lastMoveRow][lastMoveCol]), 1);
+        else if(!isXturn && emptyCorners.indexOf(grid[lastMoveRow][lastMoveCol]) != -1)
+            emptyCorners.splice(emptyCorners.indexOf(grid[lastMoveRow][lastMoveCol]), 1);
+        
+        if(Math.floor(Math.random() * 100) < difficulty(20, differ)) {
+            if(grid[1][1].textContent == '') 
+                play(grid[1][1]);
+            else
+                play(emptyCorners[Math.floor(Math.random() * emptyCorners.length)]);
+            console.log("center start attempt");
+        }
+        else if(Math.floor(Math.random() * 100) < difficulty(50, differ)) {
+            play(emptyCorners[Math.floor(Math.random() * emptyCorners.length)]);
+            console.log("corner start");
+        }
+        else if(Math.floor(Math.random() * 100) < difficulty(75, differ)) {
+            play(emptyEdges[Math.floor(Math.random() * emptyEdges.length)]);
+            console.log("edge start");
+        }
+        else
+            botRandom();
     }
-    else if(botBasic(lastMoveRow, lastMoveCol)) {
+
+    else if(botBasic(secondLastMoveRow, secondLastMoveCol))
         console.log("basic");
-        return;
+    else if(botBasic(lastMoveRow, lastMoveCol))
+        console.log("basic");
+    
+    else {
+        const intermediateSlots = [], advancedSlots = [];
+        selector(intermediateSlots, advancedSlots);
+        if(Math.floor(Math.random() * 100) < difficulty(20, differ)) {
+            if(advancedSlots.length > 0) {
+                play(advancedSlots[Math.floor(Math.random() * advancedSlots.length)]);
+                console.log("advanced");
+            }
+            else if(intermediateSlots.length > 0) {
+                play(intermediateSlots[Math.floor(Math.random() * intermediateSlots.length)]);
+                console.log("intermediate");
+            }
+        }
+        else if((Math.floor(Math.random() * 100) < difficulty(50, differ))) {
+            if(intermediateSlots.length > 0) {
+                play(intermediateSlots[Math.floor(Math.random() * intermediateSlots.length)]);
+                console.log("intermediate");
+            }
+        }
+        else
+            botRandom();
     }
-    else if(botIntermediate())
-        return;
-    else
-        botRandom();
 }
 
 const botRandom = () => {
@@ -175,13 +231,12 @@ const botRandom = () => {
     console.log("random");
 }
 
-const botIntermediate = () => {
+const selector = (intermediateSlots, advancedSlots) => {
     if(filledCount < 2)
-        return false;
-    let botMarkCount = 0;
-    const intermediateSlots = [];
-    let emptySlots = [];
-    let i,j;
+        return;
+    
+    let i, j, botMarkCount = 0;
+    const emptySlots = [], combinedSlots = [];
     
     for(i = 0; i < 3; i++) {
         for(j = 0; j < 3; j++) {
@@ -193,9 +248,9 @@ const botIntermediate = () => {
                 botMarkCount++;
         }
         if(botMarkCount == 1 && emptySlots.length == 2)
-            intermediateSlots.push(...emptySlots);
+            combinedSlots.push(...emptySlots);
         botMarkCount = 0;
-        emptySlots = [];
+        emptySlots.length = 0;
     }
     
     for(i = 0; i < 3; i++) {
@@ -208,9 +263,9 @@ const botIntermediate = () => {
                 botMarkCount++;
         }
         if(botMarkCount == 1 && emptySlots.length == 2)
-            intermediateSlots.push(...emptySlots);
+            combinedSlots.push(...emptySlots);
         botMarkCount = 0;
-        emptySlots = [];
+        emptySlots.length = 0;
     }
     
     for(i = 0; i < 3; i++) {
@@ -222,9 +277,9 @@ const botIntermediate = () => {
             botMarkCount++;
     }
     if(botMarkCount == 1 && emptySlots.length == 2)
-        intermediateSlots.push(...emptySlots);
+        combinedSlots.push(...emptySlots);
     botMarkCount = 0;
-    emptySlots = [];
+    emptySlots.length = 0;
 
     for(i = 0; i < 3; i++) {
         if(grid[i][2 - i].textContent == (isXturn?'O':'X'))
@@ -235,17 +290,29 @@ const botIntermediate = () => {
             botMarkCount++;
     }
     if(botMarkCount == 1 && emptySlots.length == 2)
-        intermediateSlots.push(...emptySlots);
+        combinedSlots.push(...emptySlots);
     botMarkCount = 0;
-    emptySlots = [];
+    emptySlots.length = 0;
 
-    if(intermediateSlots.length > 0) {
-        play(intermediateSlots[Math.floor(Math.random() * intermediateSlots.length)]);
-        console.log("Intermediate");
-        return true;
+    for(i = 0; i < combinedSlots.length; i++) {
+        if(combinedSlots.indexOf(combinedSlots[i]) == i)
+            intermediateSlots.push(combinedSlots[i])
+        else
+            advancedSlots.push(combinedSlots[i]);
+    }   
+
+    if(advancedSlots.length == 0) {
+        for(i = 0; i < 4; i++)
+            if(intermediateSlots.indexOf(corners[i])!= -1)
+                advancedSlots.push(corners[i]);
+        if(advancedSlots.length > 0)
+            console.log("better corners");
     }
-    
-    return false;
+
+    else    
+        for(i = 0; i < intermediateSlots.length; i++)
+            if(advancedSlots.indexOf(intermediateSlots[i]) != -1)
+                intermediateSlots.splice(i, 1);
 }
 
 const botBasic = (row, col) => {
