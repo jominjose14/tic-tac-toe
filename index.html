@@ -1,55 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TicTacToe</title>
-    <link rel="icon" type="image/png" href="./images/favicon.png">
-    <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
-    <script src="script.js" defer></script>
-</head>
-<body>
-    <div class="title">tic-tac-toe</div>
-    <div class="header">
-        <div class="left topCorner">
-            <span>X : </span>
-            <div class="toggle">
-                <img class="option human" src="./images/human.svg">
-                <img class="option robot" src="./images/robot.svg">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>TicTacToe</title>
+        <link rel="icon" type="image/png" href="./images/favicon.png" />
+        <link rel="manifest" href="manifest.json" />
+        <link rel="stylesheet" href="style.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet" />
+        <script src="scripts/main.js" type="module" defer></script>
+    </head>
+    <body>
+        <div class="title">tic-tac-toe</div>
+        <div class="header">
+            <div class="left topCorner">
+                <span>X : </span>
+                <div class="toggle">
+                    <img class="option human" src="./images/human.svg" />
+                    <img class="option robot" src="./images/robot.svg" />
+                </div>
+            </div>
+            <div class="right topCorner">
+                <span>O : </span>
+                <div class="toggle">
+                    <img class="option human" src="./images/human.svg" />
+                    <img class="option robot" src="./images/robot.svg" />
+                </div>
             </div>
         </div>
-        <div class="right topCorner">
-            <span>O : </span>
-            <div class="toggle">
-                <img class="option human" src="./images/human.svg">
-                <img class="option robot" src="./images/robot.svg">
+        <dialog id="toast"></dialog>
+        <div class="container">
+            <div class="pName left">
+                player 1
+                <div class="score" id="x-score">0</div>
+            </div>
+            <div id="play-grid">
+                <div class="cell" data-row="0" data-col="0"></div>
+                <div class="cell" data-row="0" data-col="1"></div>
+                <div class="cell" data-row="0" data-col="2"></div>
+                <div class="cell" data-row="1" data-col="0"></div>
+                <div class="cell" data-row="1" data-col="1"></div>
+                <div class="cell" data-row="1" data-col="2"></div>
+                <div class="cell" data-row="2" data-col="0"></div>
+                <div class="cell" data-row="2" data-col="1"></div>
+                <div class="cell" data-row="2" data-col="2"></div>
+                <div id="line-overlay"><img src="./images/line.svg" /></div>
+            </div>
+            <div class="pName right">
+                player 2
+                <div class="score" id="o-score">0</div>
             </div>
         </div>
-    </div>
-    <dialog></dialog>
-    <div class="container">
-        <div class="pName left">player 1<div class="score" id="p1Score">0</div></div>
-        <div id="playGrid">
-            <div class="slot" data-row="0" data-col="0"></div>
-            <div class="slot" data-row="0" data-col="1"></div>
-            <div class="slot" data-row="0" data-col="2"></div>
-            <div class="slot" data-row="1" data-col="0"></div>
-            <div class="slot" data-row="1" data-col="1"></div>
-            <div class="slot" data-row="1" data-col="2"></div>
-            <div class="slot" data-row="2" data-col="0"></div>
-            <div class="slot" data-row="2" data-col="1"></div>
-            <div class="slot" data-row="2" data-col="2"></div>
-            <div id="overlay"><img src="./images/line.svg"></div>
+        <div class="footer">
+            <a class="left" href="https://github.com/unnamed-demon/tic-tac-toe">Source</a>
+            <button type="button" id="difficulty-btn">Difficulty</button>
+            <button type="button" id="reset-btn">&nbsp;&nbsp;&nbsp;Reset</button>
+            <button type="button" id="theme-btn">Theme</button>
+            <a class="right" href="https://en.wikipedia.org/wiki/Tic-tac-toe">About Game</a>
         </div>
-        <div class="pName right">player 2<div class="score" id="p2Score">0</div></div>
-    </div>
-    <div class="footer">
-        <a class="left" href="https://github.com/unnamed-demon/tic-tac-toe">source</a>
-        <a class="right" href="https://en.wikipedia.org/wiki/Tic-tac-toe">about the game</a>
-    </div>
-</body>
+    </body>
 </html>

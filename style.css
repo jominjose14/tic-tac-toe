@@ -1,12 +1,41 @@
-html, body {
+:root {
+    --body-txt-color: rgb(60, 60, 60);
+    --body-bg-color: white;
+    --toggle-bg-color: rgb(170, 170, 170);
+    --toggle-option-selected: white;
+    --toggle-option-unselected: rgb(170, 170, 170);
+    --playgrid-bg-color: rgb(170, 170, 170);
+    --playgrid-txt-color: rgb(70, 70, 70);
+    --cell-bg-color: white;
+    --cell-hover-bg-color: rgb(245, 245, 245);
+    --line-filter-invert-percent: 0;
+}
+
+.dark-mode {
+    --body-txt-color: rgb(230, 230, 230);
+    --body-bg-color: rgb(25, 25, 25);
+    --toggle-bg-color: rgb(100, 100, 100);
+    --toggle-option-selected: rgb(230, 230, 230);
+    --toggle-option-unselected: rgb(100, 100, 100);
+    --playgrid-bg-color: rgb(230, 230, 230);
+    --playgrid-txt-color: rgb(230, 230, 230);
+    --cell-bg-color: rgb(25, 25, 25);
+    --cell-hover-bg-color: rgb(50, 50, 50);
+    --line-filter-invert-percent: 100%;
+}
+
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
 }
+
 body {
     flex-direction: column;
     font-family: "Permanent Marker", cursive;
-    color: #3c3c3c;
+    color: var(--body-txt-color);
+    background-color: var(--body-bg-color);
     font-size: 3vmin;
 }
 
@@ -24,15 +53,23 @@ body {
     text-align: center;
 }
 
-body, .footer, .header, .toggle, .container, .topCorner {
+body,
+.footer,
+.header,
+.toggle,
+.container,
+.topCorner {
     display: flex;
 }
 
-body, .header, .footer {
-    justify-content:space-between;
+body,
+.header,
+.footer {
+    justify-content: space-between;
 }
 
-.container, .toggle {
+.container,
+.toggle {
     justify-content: space-around;
 }
 
@@ -45,11 +82,12 @@ body, .header, .footer {
 .toggle {
     height: clamp(4.2vh, 6vmin, 7vmin);
     width: clamp(11.9vh, 17vmin, 18vmin);
-    background-color: darkgrey;
+    background-color: var(--toggle-bg-color);
     padding: 1vmin;
     cursor: pointer;
     border-radius: 1vmin;
 }
+
 .option {
     width: 45%;
     height: 100%;
@@ -57,33 +95,33 @@ body, .header, .footer {
 }
 
 .left .human {
-    background-color: white;
+    background-color: var(--toggle-option-selected);
 }
 
 .left .robot {
-    background-color: darkgrey;
+    background-color: var(--toggle-option-unselected);
 }
 
 .right .human {
-    background-color: darkgrey;
+    background-color: var(--toggle-option-unselected);
 }
 
 .right .robot {
-    background-color: white;
+    background-color: var(--toggle-option-selected);
 }
 
-span {
+.header span {
     margin-right: 3vmin;
     text-wrap: nowrap;
 }
 
-.footer {
-    margin: 4vmin;
+#toast {
+    border: none;
+    border-radius: 1vmin;
 }
 
-a {
-    text-decoration: none;
-    color: #3c3c3c;
+#toast::backdrop {
+    backdrop-filter: blur(3px);
 }
 
 .container {
@@ -93,21 +131,21 @@ a {
     flex-grow: 1;
 }
 
-#playGrid {
+#play-grid {
     display: grid;
     grid-template: 20vmin 20vmin 20vmin / 20vmin 20vmin 20vmin;
     overflow: hidden;
     gap: 1vmin;
-    background-color: darkgrey;
+    color: var(--playgrid-txt-color);
+    background-color: var(--playgrid-bg-color);
     position: relative;
-    color: #464646;
 }
 
 @media screen and (max-width: 130vh) {
     .header {
-      margin-top: 16vh;
-      margin-bottom: 5vmin;
-      justify-content: center;
+        margin-top: 16vh;
+        margin-bottom: 5vmin;
+        justify-content: center;
     }
 
     .footer {
@@ -125,7 +163,7 @@ a {
         margin-bottom: 0;
     }
 
-    #playGrid {
+    #play-grid {
         grid-template: 28vmin 28vmin 28vmin / 28vmin 28vmin 28vmin;
         gap: 1.4vmin;
     }
@@ -133,7 +171,7 @@ a {
     body {
         font-size: 4.5vmin;
     }
-    
+
     .title {
         font-size: 7vh;
     }
@@ -144,22 +182,38 @@ a {
     text-align: center;
 }
 
-#overlay {
+#line-overlay {
     position: absolute;
     height: 100%;
     width: 100%;
     display: none;
 }
 
-#overlay img {
+#line-overlay img {
     width: 100%;
+    filter: invert(var(--line-filter-invert-percent));
 }
 
-.slot {
+.cell {
     font-size: 15vmin;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: white;
+    background-color: var(--cell-bg-color);
+    cursor: pointer;
+}
+
+.footer {
+    margin: 2.5vmin 4vmin;
+    font-size: 2.75vmin;
+}
+
+.footer a {
+    text-decoration: none;
+    color: var(--body-txt-color);
+}
+
+.footer button {
+    all: unset;
     cursor: pointer;
 }
