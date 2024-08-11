@@ -1,5 +1,5 @@
 import { me, you, empty, buildBoard, findEmptyCells } from "./bot.js";
-import { randInt } from "./util.js";
+import { randInt, randElement } from "./util.js";
 
 const didPlayerWin = (board, player, lastBoardMove) => {
     const { row, col } = lastBoardMove;
@@ -19,7 +19,8 @@ const doesForkExist = (board, player) => {
     return winCount > 1;
 };
 
-const ruleBot = () => {
+// difficultyIdx=difficulty: 1=easy, 2=medium, 3=impossible
+const ruleBot = (difficultyIdx) => {
     const board = buildBoard();
     const emptyCells = findEmptyCells(board);
 
@@ -40,12 +41,16 @@ const ruleBot = () => {
         board[cell.row][cell.col] = empty;
     }
 
+    if (difficultyIdx == 1) return randElement(emptyCells); // easy difficulty early return
+
     // 3) create my fork
     for (const cell of emptyCells) {
         board[cell.row][cell.col] = me;
         if (doesForkExist(board, me)) return cell;
         board[cell.row][cell.col] = empty;
     }
+
+    if (difficultyIdx == 2) return randElement(emptyCells); // medium difficulty early return
 
     // 4) prevent all your forks
     const yourForks = [];

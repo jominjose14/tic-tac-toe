@@ -20,10 +20,16 @@ export const toggleSound = new Audio("./audio/toggle.mp3");
 export const $xScore = document.getElementById("x-score");
 export const $oScore = document.getElementById("o-score");
 export const $toast = document.getElementById("toast");
+export const $difficultyDialog = document.getElementById("difficulty-dialog");
+
+// miscellaneous
+export const difficulties = ["dynamic", "easy", "medium", "impossible"];
 
 // state
 export const state = {
     grid: grid,
+    xBotDifficultyIdx: 0,
+    oBotDifficultyIdx: 0,
     filledCount: 0,
     isGameOver: false,
     isXturn: true,

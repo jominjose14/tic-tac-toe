@@ -180,6 +180,19 @@ const reset = () => {
     }
 };
 
+// difficultyIdx=difficulty: 1=easy, 2=medium, 3=impossible
+const calcDynamicDifficultyIdx = () => {
+    const isXbotTurn = state.isXbot && state.isXturn;
+    const scoreDiff = isXbotTurn ? parseInt($xScore.textContent) - parseInt($oScore.textContent) : parseInt($oScore.textContent) - parseInt($xScore.textContent);
+    if (scoreDiff <= -3) {
+        return 3; // impossible
+    } else if (-2 <= scoreDiff && scoreDiff <= 1) {
+        return 2; // medium
+    } else if (2 <= scoreDiff) {
+        return 1; // easy
+    }
+};
+
 // fail-safe to stop bot from playing if it is actually a human turn
 const isInvalidBotTurn = () => {
     if (state.isGameOver || (state.isXturn && !state.isXbot) || (!state.isXturn && !state.isObot)) {
@@ -198,8 +211,12 @@ const bot = () => {
     disable($playGrid);
 
     // --- make next bot move ---
+    const isXbotTurn = state.isXbot && state.isXturn;
+    let difficultyIdx = isXbotTurn ? state.xBotDifficultyIdx : state.oBotDifficultyIdx;
+    if (difficultyIdx == 0) difficultyIdx = calcDynamicDifficultyIdx();
+
     // const chosenCell = treeBot();
-    const chosenCell = ruleBot();
+    const chosenCell = ruleBot(difficultyIdx);
     play(state.grid[chosenCell.row][chosenCell.col]);
 
     // --- initiate next bot move if a bot must make it, else ensure turn transfers to human ---

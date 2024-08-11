@@ -1,9 +1,9 @@
-import { toastDelay, $toast, state, toggleSound, botVsBotDelay, footerButtonDelay } from "./global.js";
+import { toastDelay, $toast, state, toggleSound, botVsBotDelay, footerButtonDelay, difficulties, $difficultyDialog } from "./global.js";
 import { $playGrid } from "./grid.js";
 import { reset, bot } from "./game.js";
 
 // --- convenience ---
-export const getRandomElement = (array) => {
+export const randElement = (array) => {
     return array[Math.floor(Math.random() * array.length)];
 };
 
@@ -74,7 +74,10 @@ export const oToggle = (event) => {
     }
 };
 
-export const toggleDifficulty = () => {};
+export const changeDifficulty = (event) => {
+    toggleSound.play();
+    $difficultyDialog.showModal();
+};
 
 export const doReset = () => {
     toggleSound.play();
@@ -82,9 +85,9 @@ export const doReset = () => {
     reset();
 };
 
-export const toggleTheme = (e) => {
+export const toggleTheme = (event) => {
     toggleSound.play();
-    e.target.innerHTML = document.body.classList.contains("dark-mode") ? "&nbsp;Light" : "&nbsp;&nbsp;Dark"; // added &nbsp; as padding to ensure word width is consistent between (Theme, Light, Dark) no matter the button text at any given time
+    event.target.innerHTML = document.body.classList.contains("dark-mode") ? "&nbsp;Light" : "&nbsp;&nbsp;Dark"; // added &nbsp; as padding to ensure word width is consistent between (Theme, Light, Dark) no matter the button text at any given time
     document.body.classList.toggle("dark-mode");
-    setTimeout(() => (e.target.textContent = "Theme"), footerButtonDelay);
+    setTimeout(() => (event.target.textContent = "Theme"), footerButtonDelay);
 };

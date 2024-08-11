@@ -6,7 +6,7 @@
     --toggle-option-unselected: rgb(170, 170, 170);
     --playgrid-bg-color: rgb(170, 170, 170);
     --playgrid-txt-color: rgb(70, 70, 70);
-    --cell-bg-color: white;
+    --cell-bg-color: rgb(252, 252, 252);
     --cell-hover-bg-color: rgb(245, 245, 245);
     --line-filter-invert-percent: 0;
 }
@@ -19,7 +19,7 @@
     --toggle-option-unselected: rgb(100, 100, 100);
     --playgrid-bg-color: rgb(230, 230, 230);
     --playgrid-txt-color: rgb(230, 230, 230);
-    --cell-bg-color: rgb(25, 25, 25);
+    --cell-bg-color: rgb(28, 28, 28);
     --cell-hover-bg-color: rgb(50, 50, 50);
     --line-filter-invert-percent: 100%;
 }
@@ -115,13 +115,82 @@ body,
     text-wrap: nowrap;
 }
 
-#toast {
+dialog {
     border: none;
     border-radius: 1vmin;
 }
 
-#toast::backdrop {
+dialog .close {
+    position: absolute;
+    top: 1.5vmin;
+    right: 1.5vmin;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: rgb(182, 40, 40);
+    background-color: rgba(182, 40, 40, 0.25);
+    box-sizing: border-box;
+    font-size: 2.5vmin;
+    line-height: 0.4;
+    padding: 1vmin;
+    padding-bottom: 1.25vmin;
+    border-radius: 50%;
+}
+
+dialog::backdrop {
     backdrop-filter: blur(3px);
+}
+
+#difficulty-dialog {
+    position: relative;
+    font-size: 2.75vmin;
+}
+
+#difficulty-dialog::backdrop {
+    backdrop-filter: blur(7px);
+}
+
+#difficulty-dialog .dialog-container {
+    margin: 3.3vmin 3vmin;
+    display: flex;
+    flex-direction: row;
+    gap: 1.5vmin;
+}
+
+#difficulty-dialog .section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4vmin;
+}
+
+#difficulty-dialog .difficulty-bot-label {
+    color: rgb(170, 170, 170);
+}
+
+#difficulty-dialog .difficulty-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5vmin;
+}
+
+#difficulty-dialog .difficulty-option {
+    cursor: pointer;
+    width: 10ch;
+    text-align: center;
+    border-radius: 1.25vmin;
+    padding: 0.75vmin 1.5vmin 1.25vmin;
+    background-color: rgb(235, 235, 235);
+}
+
+#difficulty-dialog .difficulty-option:not(.selected):hover {
+    background-color: rgb(220, 220, 220);
+}
+
+#difficulty-dialog .difficulty-option.selected {
+    background-color: rgb(50, 50, 50);
+    color: white;
 }
 
 .container {
@@ -134,13 +203,15 @@ body,
 #play-grid {
     display: grid;
     grid-template: 20vmin 20vmin 20vmin / 20vmin 20vmin 20vmin;
+    border-radius: 3vmin;
     overflow: hidden;
     gap: 1vmin;
     color: var(--playgrid-txt-color);
-    background-color: var(--playgrid-bg-color);
+    background-image: linear-gradient(transparent 0%, var(--playgrid-bg-color) 30%, var(--playgrid-bg-color) 70%, transparent 100%), linear-gradient(to right, transparent 0%, var(--playgrid-bg-color) 30%, var(--playgrid-bg-color) 70%, transparent 100%);
     position: relative;
 }
 
+/* resized laptop/desktop browser */
 @media screen and (max-width: 130vh) {
     .header {
         margin-top: 16vh;
@@ -153,9 +224,33 @@ body,
     }
 }
 
+/* tablets */
+@media screen and (max-width: 75vh) {
+    dialog {
+        border-radius: 2vmin;
+    }
+
+    #difficulty-dialog {
+        font-size: 3.5vmin;
+    }
+
+    #difficulty-dialog .close {
+        top: 2.2vmin;
+        right: 2.2vmin;
+        font-size: 3.5vmin;
+        padding: 1.5vmin;
+        padding-bottom: 2.2vmin;
+    }
+}
+
+/* TV and mobile */
 @media screen and (max-width: 56.3vh) {
-    .container {
-        flex-direction: column;
+    body {
+        font-size: 4.5vmin;
+    }
+
+    .title {
+        font-size: 7vh;
     }
 
     .header {
@@ -163,17 +258,52 @@ body,
         margin-bottom: 0;
     }
 
+    .container {
+        flex-direction: column;
+    }
+
     #play-grid {
         grid-template: 28vmin 28vmin 28vmin / 28vmin 28vmin 28vmin;
         gap: 1.4vmin;
     }
 
-    body {
-        font-size: 4.5vmin;
+    dialog {
+        border-radius: 2vmin;
     }
 
-    .title {
-        font-size: 7vh;
+    #difficulty-dialog {
+        font-size: 4vmin;
+    }
+
+    #difficulty-dialog .close {
+        top: 2.2vmin;
+        right: 2.2vmin;
+        font-size: 3.8vmin;
+        padding: 1.75vmin;
+        padding-bottom: 2vmin;
+    }
+
+    #difficulty-dialog .dialog-container {
+        margin: 4.2vmin 4vmin;
+        flex-direction: row;
+        gap: 1.5vmin;
+    }
+
+    #difficulty-dialog .section {
+        flex-direction: column;
+        align-items: center;
+        gap: 4vmin;
+    }
+
+    #difficulty-dialog .difficulty-options {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5vmin;
+    }
+
+    #difficulty-dialog .difficulty-option {
+        border-radius: 1.25vmin;
+        padding: 0.75vmin 1.5vmin 1.25vmin;
     }
 }
 

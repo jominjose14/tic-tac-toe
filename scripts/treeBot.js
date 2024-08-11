@@ -1,5 +1,5 @@
 import { me, you, empty, findEmptyCells, buildBoard } from "./bot.js";
-import { getRandomElement } from "./util.js";
+import { randElement } from "./util.js";
 
 let lastBoardMove = { row: -1, col: -1 };
 
@@ -39,12 +39,12 @@ const treeSearch = (board, player) => {
         let maxScore = cells[0].score;
         for (const cell of cells) maxScore = Math.max(maxScore, cell.score);
         const maxScoreCells = cells.filter((cell) => cell.score === maxScore);
-        chosenCell = getRandomElement(maxScoreCells);
+        chosenCell = randElement(maxScoreCells);
     } else if (player === you) {
         let minScore = cells[0].score;
         for (const cell of cells) minScore = Math.min(minScore, cell.score);
         const minScoreCells = cells.filter((cell) => cell.score === minScore);
-        chosenCell = getRandomElement(minScoreCells);
+        chosenCell = randElement(minScoreCells);
     }
 
     return chosenCell;

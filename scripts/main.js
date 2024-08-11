@@ -1,16 +1,74 @@
-import { state, botDelay, botVsBotDelay } from "./global.js";
+import { state, toggleSound, botDelay, botVsBotDelay, $difficultyDialog, difficulties } from "./global.js";
 import { $playGrid } from "./grid.js";
-import { disable, enable, xToggle, oToggle, toggleDifficulty, doReset, toggleTheme } from "./util.js";
+import { disable, enable, xToggle, oToggle, changeDifficulty, doReset, toggleTheme } from "./util.js";
 import { play, bot } from "./game.js";
 
 const main = () => {
-    // theme
+    initTheme();
+    initDifficultyDialog();
+    attachCellListeners();
+    attachHumanBotToggleListeners();
+    attachFooterButtonListeners();
+};
+
+const initTheme = () => {
     const systemSettingDark = window.matchMedia("(prefers-color-scheme: dark)");
     if (systemSettingDark.matches) {
         document.body.classList.add("dark-mode");
     }
+};
 
-    // cell listeners
+const initDifficultyDialog = () => {
+    // attach close button listener
+    const $closeButton = $difficultyDialog.querySelector(".close");
+    $closeButton.onclick = () => $difficultyDialog.close();
+
+    // populate difficulty options
+    const $difficultyOptionsLists = $difficultyDialog.querySelectorAll(".difficulty-options");
+    $difficultyOptionsLists.forEach(($difficultyOptionsList) => {
+        for (let i = 0; i < difficulties.length; i++) {
+            const difficulty = difficulties[i];
+            const $difficultyOption = document.createElement("div");
+            $difficultyOption.classList.add("difficulty-option");
+            $difficultyOption.setAttribute("data-difficulty-idx", i);
+            $difficultyOption.textContent = difficulty;
+
+            $difficultyOption.onclick = () => {
+                toggleSound.play();
+
+                if ($difficultyOptionsList.classList.contains("x-bot")) {
+                    // update UI
+                    const $oldSelectedOption = $difficultyOptionsList.querySelector(`.difficulty-option:nth-of-type(${1 + state.xBotDifficultyIdx})`);
+                    $oldSelectedOption.classList.remove("selected");
+                    $difficultyOption.classList.add("selected");
+
+                    // update state
+                    state.xBotDifficultyIdx = parseInt($difficultyOption.getAttribute("data-difficulty-idx"));
+                } else {
+                    // update UI
+                    const $oldSelectedOption = $difficultyOptionsList.querySelector(`.difficulty-option:nth-of-type(${1 + state.oBotDifficultyIdx})`);
+                    $oldSelectedOption.classList.remove("selected");
+                    $difficultyOption.classList.add("selected");
+
+                    // update state
+                    state.oBotDifficultyIdx = parseInt($difficultyOption.getAttribute("data-difficulty-idx"));
+                }
+            };
+
+            // highlight option on dialog open if it is the currently selected option
+            if ($difficultyOptionsList.classList.contains("x-bot") && state.xBotDifficultyIdx == i) {
+                $difficultyOption.classList.add("selected");
+            }
+            if ($difficultyOptionsList.classList.contains("o-bot") && state.oBotDifficultyIdx == i) {
+                $difficultyOption.classList.add("selected");
+            }
+
+            $difficultyOptionsList.appendChild($difficultyOption);
+        }
+    });
+};
+
+const attachCellListeners = () => {
     const $cells = $playGrid.querySelectorAll(".cell");
     $cells.forEach(($cell) => {
         $cell.addEventListener("click", () => {
@@ -35,16 +93,18 @@ const main = () => {
             $cell.style.backgroundColor = "var(--cell-bg-color)";
         });
     });
+};
 
-    // human/bot toggle listeners
+const attachHumanBotToggleListeners = () => {
     const $xToggle = document.querySelector(".left > .toggle");
     $xToggle.addEventListener("click", (e) => xToggle(e));
     const $oToggle = document.querySelector(".right > .toggle");
     $oToggle.addEventListener("click", (e) => oToggle(e));
+};
 
-    // footer button listeners
+const attachFooterButtonListeners = () => {
     const $difficultyBtn = document.getElementById("difficulty-btn");
-    $difficultyBtn.onclick = toggleDifficulty;
+    $difficultyBtn.onclick = changeDifficulty;
     const $resetBtn = document.getElementById("reset-btn");
     $resetBtn.onclick = doReset;
     const $themeBtn = document.getElementById("theme-btn");
