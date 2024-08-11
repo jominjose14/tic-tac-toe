@@ -1,26 +1,50 @@
 :root {
-    --body-txt-color: rgb(60, 60, 60);
-    --body-bg-color: white;
-    --toggle-bg-color: rgb(170, 170, 170);
-    --toggle-option-selected: white;
-    --toggle-option-unselected: rgb(170, 170, 170);
-    --playgrid-bg-color: rgb(170, 170, 170);
-    --playgrid-txt-color: rgb(70, 70, 70);
-    --cell-bg-color: rgb(252, 252, 252);
-    --cell-hover-bg-color: rgb(245, 245, 245);
+    --body-txt-color: hsl(0, 0%, 24%);
+    --body-bg-color: hsl(0, 0%, 100%);
+
+    --toggle-bg-color: hsl(0, 0%, 67%);
+    --toggle-option-selected: hsl(0, 0%, 100%);
+    --toggle-option-unselected: hsl(0, 0%, 67%);
+
+    --dialog-bg-color: hsl(0, 0%, 100%);
+
+    --difficulty-option-bg-color: hsl(0, 0%, 95%);
+    --difficulty-option-txt-color: hsl(0, 0%, 24%);
+    --difficulty-option-hover-bg-color: hsl(0, 0%, 90%);
+    --difficulty-option-selected-bg-color: hsl(0, 0%, 24%);
+    --difficulty-option-selected-txt-color: hsl(0, 0%, 100%);
+
+    --playgrid-bg-color: hsl(0, 0%, 67%);
+    --playgrid-txt-color: hsl(0, 0%, 27%);
+
+    --cell-bg-color: hsl(0, 0%, 99%);
+    --cell-hover-bg-color: hsl(0, 0%, 96%);
+
     --line-filter-invert-percent: 0;
 }
 
 .dark-mode {
-    --body-txt-color: rgb(230, 230, 230);
-    --body-bg-color: rgb(25, 25, 25);
-    --toggle-bg-color: rgb(100, 100, 100);
-    --toggle-option-selected: rgb(230, 230, 230);
-    --toggle-option-unselected: rgb(100, 100, 100);
-    --playgrid-bg-color: rgb(230, 230, 230);
-    --playgrid-txt-color: rgb(230, 230, 230);
-    --cell-bg-color: rgb(28, 28, 28);
-    --cell-hover-bg-color: rgb(50, 50, 50);
+    --body-txt-color: hsl(0, 0%, 90%);
+    --body-bg-color: hsl(0, 0%, 10%);
+
+    --toggle-bg-color: hsl(0, 0%, 39%);
+    --toggle-option-selected: hsl(0, 0%, 90%);
+    --toggle-option-unselected: hsl(0, 0%, 39%);
+
+    --dialog-bg-color: hsl(0, 0%, 15%);
+
+    --difficulty-option-bg-color: hsl(0, 0%, 20%);
+    --difficulty-option-txt-color: hsl(0, 0%, 90%);
+    --difficulty-option-hover-bg-color: hsl(0, 0%, 25%);
+    --difficulty-option-selected-bg-color: hsl(0, 0%, 90%);
+    --difficulty-option-selected-txt-color: hsl(0, 0%, 15%);
+
+    --playgrid-bg-color: hsl(0, 0%, 90%);
+    --playgrid-txt-color: hsl(0, 0%, 90%);
+
+    --cell-bg-color: hsl(0, 0%, 11%);
+    --cell-hover-bg-color: hsl(0, 0%, 20%);
+
     --line-filter-invert-percent: 100%;
 }
 
@@ -118,6 +142,8 @@ body,
 dialog {
     border: none;
     border-radius: 1vmin;
+    background-color: var(--dialog-bg-color);
+    color: var(--body-txt-color);
 }
 
 dialog .close {
@@ -181,16 +207,17 @@ dialog::backdrop {
     text-align: center;
     border-radius: 1.25vmin;
     padding: 0.75vmin 1.5vmin 1.25vmin;
-    background-color: rgb(235, 235, 235);
+    background-color: var(--difficulty-option-bg-color);
+    color: var(--difficulty-option-txt-color);
 }
 
 #difficulty-dialog .difficulty-option:not(.selected):hover {
-    background-color: rgb(220, 220, 220);
+    background-color: var(--difficulty-option-hover-bg-color);
 }
 
 #difficulty-dialog .difficulty-option.selected {
-    background-color: rgb(50, 50, 50);
-    color: white;
+    background-color: var(--difficulty-option-selected-bg-color);
+    color: var(--difficulty-option-selected-txt-color);
 }
 
 .container {

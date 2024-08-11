@@ -16,6 +16,7 @@ export const randInt = (low, high) => {
 export const showToast = (message) => {
     $toast.textContent = message;
     $toast.showModal();
+    $toast.blur();
     setTimeout(() => $toast.close(), toastDelay);
 };
 

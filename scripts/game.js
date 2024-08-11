@@ -184,6 +184,7 @@ const reset = () => {
 const calcDynamicDifficultyIdx = () => {
     const isXbotTurn = state.isXbot && state.isXturn;
     const scoreDiff = isXbotTurn ? parseInt($xScore.textContent) - parseInt($oScore.textContent) : parseInt($oScore.textContent) - parseInt($xScore.textContent);
+    // -ve scoreDiff = I am behind, +ve scoreDiff = I am ahead
     if (scoreDiff <= -3) {
         return 3; // impossible
     } else if (-2 <= scoreDiff && scoreDiff <= 1) {

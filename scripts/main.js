@@ -89,9 +89,9 @@ const attachCellListeners = () => {
             $cell.style.backgroundColor = "var(--cell-hover-bg-color)";
         });
 
-        $cell.addEventListener("mouseleave", () => {
-            $cell.style.backgroundColor = "var(--cell-bg-color)";
-        });
+        const revertCellBackground = () => ($cell.style.backgroundColor = "var(--cell-bg-color)");
+        $cell.addEventListener("mouseleave", revertCellBackground);
+        $cell.addEventListener("touchend", revertCellBackground);
     });
 };
 
