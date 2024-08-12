@@ -4,9 +4,9 @@ import { randElement } from "./util.js";
 let lastBoardMove = { row: -1, col: -1 };
 
 const didPlayerWin = (board, player) => {
-    if (lastBoardMove.row == -1) return false; // if lastBoardMove is invalid, no move out of the possible moves has been tried (start of recursion), so skip win check
+    if (lastBoardMove.row === -1) return false; // if lastBoardMove is invalid, no move out of the possible moves has been tried (start of recursion), so skip win check
     const { row, col } = lastBoardMove;
-    return (board[row][0] == player && board[row][1] == player && board[row][2] == player) || (board[0][col] == player && board[1][col] == player && board[2][col] == player) || (board[0][0] == player && board[1][1] == player && board[2][2] == player) || (board[0][2] == player && board[1][1] == player && board[2][0] == player);
+    return (board[row][0] === player && board[row][1] === player && board[row][2] === player) || (board[0][col] === player && board[1][col] === player && board[2][col] === player) || (board[0][0] === player && board[1][1] === player && board[2][2] === player) || (board[0][2] === player && board[1][1] === player && board[2][0] === player);
 };
 
 // returns an object of shape { cell: {row,col}, score } for non-leaf nodes and an object of shape { score } for leaf nodes (when next move leads to gameover) of the game tree

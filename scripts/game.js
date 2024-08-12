@@ -1,4 +1,4 @@
-import { state, resetDelay, botDelay, botVsBotDelay, xSound, oSound, lineSound, $xScore, $oScore } from "./global.js";
+import { state, resetDelay, xSound, oSound, lineSound, $xScore, $oScore } from "./global.js";
 import { $playGrid, at } from "./grid.js";
 import { showToast, enable, disable } from "./util.js";
 import treeBot from "./treeBot.js";
@@ -37,7 +37,7 @@ const play = ($cell) => {
         }
 
         setTimeout(reset, resetDelay);
-    } else if (state.filledCount == 9) {
+    } else if (state.filledCount === 9) {
         state.isGameOver = true;
         state.botTimeout.stop();
         state.botVsBotInterval.stop();
@@ -53,16 +53,16 @@ const checkWin = () => {
     const row = state.lastMove.row;
     const col = state.lastMove.col;
 
-    if (at(row, 0) == at(row, 1) && at(row, 1) == at(row, 2)) {
+    if (at(row, 0) === at(row, 1) && at(row, 1) === at(row, 2)) {
         drawLine(0, row);
         return true;
-    } else if (at(0, col) == at(1, col) && at(1, col) == at(2, col)) {
+    } else if (at(0, col) === at(1, col) && at(1, col) === at(2, col)) {
         drawLine(1, col);
         return true;
-    } else if (row == col && at(0, 0) == at(1, 1) && at(1, 1) == at(2, 2)) {
+    } else if (row === col && at(0, 0) === at(1, 1) && at(1, 1) === at(2, 2)) {
         drawLine(2, 0);
         return true;
-    } else if (row + col == 2 && at(0, 2) == at(1, 1) && at(1, 1) == at(2, 0)) {
+    } else if (row + col === 2 && at(0, 2) === at(1, 1) && at(1, 1) === at(2, 0)) {
         drawLine(2, 1);
         return true;
     }
@@ -214,7 +214,7 @@ const bot = () => {
     // --- make next bot move ---
     const isXbotTurn = state.isXbot && state.isXturn;
     let difficultyIdx = isXbotTurn ? state.xBotDifficultyIdx : state.oBotDifficultyIdx;
-    if (difficultyIdx == 0) difficultyIdx = calcDynamicDifficultyIdx();
+    if (difficultyIdx === 0) difficultyIdx = calcDynamicDifficultyIdx();
 
     // const chosenCell = treeBot();
     const chosenCell = ruleBot(difficultyIdx);

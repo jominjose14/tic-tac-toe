@@ -1,7 +1,7 @@
-import { state, toggleSound, botDelay, botVsBotDelay, $difficultyDialog, difficulties } from "./global.js";
+import { state, toggleSound, $difficultyDialog, difficulties } from "./global.js";
 import { $playGrid } from "./grid.js";
 import { disable, enable, xToggle, oToggle, changeDifficulty, doReset, toggleTheme } from "./util.js";
-import { play, bot } from "./game.js";
+import { play } from "./game.js";
 
 const main = () => {
     initTheme();
@@ -56,10 +56,10 @@ const initDifficultyDialog = () => {
             };
 
             // highlight option on dialog open if it is the currently selected option
-            if ($difficultyOptionsList.classList.contains("x-bot") && state.xBotDifficultyIdx == i) {
+            if ($difficultyOptionsList.classList.contains("x-bot") && state.xBotDifficultyIdx === i) {
                 $difficultyOption.classList.add("selected");
             }
-            if ($difficultyOptionsList.classList.contains("o-bot") && state.oBotDifficultyIdx == i) {
+            if ($difficultyOptionsList.classList.contains("o-bot") && state.oBotDifficultyIdx === i) {
                 $difficultyOption.classList.add("selected");
             }
 

@@ -155,11 +155,10 @@ dialog .close {
     cursor: pointer;
     color: rgb(182, 40, 40);
     background-color: rgba(182, 40, 40, 0.25);
-    box-sizing: border-box;
-    font-size: 2.5vmin;
-    line-height: 0.4;
-    padding: 1vmin;
-    padding-bottom: 1.25vmin;
+    height: 3.5vmin;
+    width: 3.5vmin;
+    padding-bottom: 0.1vmin;
+    font-size: 82%;
     border-radius: 50%;
 }
 
@@ -264,9 +263,8 @@ dialog::backdrop {
     #difficulty-dialog .close {
         top: 2.2vmin;
         right: 2.2vmin;
-        font-size: 3.5vmin;
-        padding: 1.5vmin;
-        padding-bottom: 2.2vmin;
+        height: 4.2vmin;
+        width: 4.2vmin;
     }
 }
 
@@ -305,9 +303,8 @@ dialog::backdrop {
     #difficulty-dialog .close {
         top: 2.2vmin;
         right: 2.2vmin;
-        font-size: 3.8vmin;
-        padding: 1.75vmin;
-        padding-bottom: 2vmin;
+        height: 5vmin;
+        width: 5vmin;
     }
 
     #difficulty-dialog .dialog-container {

@@ -1,6 +1,5 @@
-import { toastDelay, $toast, state, toggleSound, botVsBotDelay, footerButtonDelay, difficulties, $difficultyDialog } from "./global.js";
-import { $playGrid } from "./grid.js";
-import { reset, bot } from "./game.js";
+import { toastDelay, $toast, state, toggleSound, footerButtonDelay, $difficultyDialog } from "./global.js";
+import { reset } from "./game.js";
 
 // --- convenience ---
 export const randElement = (array) => {
@@ -75,7 +74,7 @@ export const oToggle = (event) => {
     }
 };
 
-export const changeDifficulty = (event) => {
+export const changeDifficulty = () => {
     toggleSound.play();
     $difficultyDialog.showModal();
 };
