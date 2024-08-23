@@ -1,6 +1,7 @@
 import { me, you, empty, findEmptyCells, buildBoard } from "./bot.js";
 import { randElement } from "./util.js";
 
+const reward = 10;
 let lastBoardMove = { row: -1, col: -1 };
 
 const didPlayerWin = (board, player) => {
@@ -10,14 +11,14 @@ const didPlayerWin = (board, player) => {
 };
 
 // returns an object of shape { cell: {row,col}, score } for non-leaf nodes and an object of shape { score } for leaf nodes (when next move leads to gameover) of the game tree
-const treeSearch = (board, player) => {
+const treeSearch = (board, player, depth) => {
     const cells = findEmptyCells(board);
 
     // early return if at a leaf node of the game tree (base case of recursion)
     if (didPlayerWin(board, me)) {
-        return { score: +10 };
+        return { score: reward - depth };
     } else if (didPlayerWin(board, you)) {
-        return { score: -10 };
+        return { score: depth - reward };
     } else if (cells.length === 0) {
         return { score: 0 };
     }
@@ -27,7 +28,7 @@ const treeSearch = (board, player) => {
         lastBoardMove.row = cells[i].row;
         lastBoardMove.col = cells[i].col;
 
-        const result = treeSearch(board, player === me ? you : me); // find chosen cell (cell with max score for me, cell with min score for you)
+        const result = treeSearch(board, player === me ? you : me, depth + 1); // find chosen cell (cell with max score for me, cell with min score for you)
         cells[i].score = result.score;
 
         board[cells[i].row][cells[i].col] = empty; // revert move
@@ -52,7 +53,7 @@ const treeSearch = (board, player) => {
 
 const treeBot = () => {
     const board = buildBoard();
-    const chosenCell = treeSearch(board, me);
+    const chosenCell = treeSearch(board, me, 0);
     return chosenCell;
 };
 
