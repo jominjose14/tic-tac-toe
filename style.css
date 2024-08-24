@@ -20,7 +20,7 @@
     --cell-bg-color: hsl(0, 0%, 99%);
     --cell-hover-bg-color: hsl(0, 0%, 96%);
 
-    --line-filter-invert-percent: 0;
+    --line-stroke-color: hsl(0, 0%, 24%);
 }
 
 .dark-mode {
@@ -45,7 +45,7 @@
     --cell-bg-color: hsl(0, 0%, 11%);
     --cell-hover-bg-color: hsl(0, 0%, 20%);
 
-    --line-filter-invert-percent: 100%;
+    --line-stroke-color: hsl(0, 0%, 90%);
 }
 
 html,
@@ -338,23 +338,52 @@ dialog::backdrop {
 
 #line-overlay {
     position: absolute;
+    z-index: 3;
     height: 100%;
     width: 100%;
     display: none;
 }
 
-#line-overlay img {
-    width: 100%;
-    filter: invert(var(--line-filter-invert-percent));
+#line-svg-line {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: draw 0.4s linear forwards;
 }
 
 .cell {
+    position: relative;
     font-size: 15vmin;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: var(--cell-bg-color);
+    overflow: hidden;
     cursor: pointer;
+}
+
+.x-svg, .o-svg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.x-svg {
+    scale: 1.125 1.9;
+}
+
+.o-svg {
+    translate: 0 4%;
+}
+
+.x-svg-line-1,
+.x-svg-line-2 {
+    stroke-dasharray: 120;
+    stroke-dashoffset: 120;
+}
+
+.o-svg-path {
+    stroke-dasharray: 400;
+    stroke-dashoffset: 400;
 }
 
 .footer {
@@ -370,4 +399,10 @@ dialog::backdrop {
 .footer button {
     all: unset;
     cursor: pointer;
+}
+
+@keyframes draw {
+    to {
+        stroke-dashoffset: 0;
+    }
 }

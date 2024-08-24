@@ -1,11 +1,19 @@
-import { state, resetDelay, xSound, oSound, lineSound, $xScore, $oScore } from "./global.js";
-import { $playGrid, at } from "./grid.js";
-import { showToast, enable, disable } from "./util.js";
+import {
+    state,
+    resetDelay,
+    xSound,
+    oSound,
+    lineSound,
+    $xScore,
+    $oScore,
+} from "./global.js";
+import {$playGrid, at, clearCell, isCellEmpty, setCell} from "./grid.js";
+import { showToast, enable, disable, createMarkMask } from "./util.js";
 import treeBot from "./treeBot.js";
 import ruleBot from "./ruleBot.js";
 
 const play = ($cell) => {
-    if ($cell.textContent !== "") return;
+    if (!isCellEmpty($cell)) return;
 
     state.secondLastMove.row = state.lastMove.row;
     state.secondLastMove.col = state.lastMove.col;
@@ -15,10 +23,12 @@ const play = ($cell) => {
     // make the move
     if (state.isXturn) {
         xSound.play();
-        $cell.textContent = "X";
+        setCell($cell, "X");
+        createMarkMask($cell);
     } else {
         oSound.play();
-        $cell.textContent = "O";
+        setCell($cell, "O");
+        createMarkMask($cell);
     }
     state.filledCount++;
 
@@ -82,7 +92,7 @@ const checkWin = () => {
 
 export const drawLine = (axis, pos) => {
     lineSound.play();
-    const $line = document.querySelector("#line-overlay img");
+    const $line = document.querySelector("#line-overlay svg");
     const $overlay = document.getElementById("line-overlay");
 
     switch (axis) {
@@ -159,9 +169,7 @@ const reset = () => {
     state.isXturn = true;
 
     const $cells = $playGrid.querySelectorAll(".cell");
-    $cells.forEach(($cell) => {
-        $cell.textContent = "";
-    });
+    $cells.forEach(($cell) => clearCell($cell));
 
     const $lineOverlay = document.getElementById("line-overlay");
     $lineOverlay.style.display = "none";

@@ -27,6 +27,45 @@ export const disable = ($element) => {
     $element.style.pointerEvents = "none";
 };
 
+export const createMarkMask = ($cell) => {
+    // create svg element using template
+    const prefix = state.isXturn ? 'x' : 'o';
+    const $svgTemplate = document.getElementById(`${prefix}-svg-template`);
+    const $svgFragment = $svgTemplate.content.cloneNode(true);
+    const $svg = $svgFragment.querySelector(`.${prefix}-svg`);
+
+    // append svg into $cell
+    $cell.appendChild($svg);
+
+    // create unique reveal mask id
+    const uniqueRevealMaskId = `${prefix}-reveal-mask-${state.svgMaskIdCounter}`;
+
+    // set id on mask element
+    const $revealMask = $svg.getElementById(`${prefix}-reveal-mask`);
+    $revealMask.id = uniqueRevealMaskId;
+
+    // set reference to id on rect
+    $svg.innerHTML = $svg.innerHTML.replace(`url(#${prefix}-reveal-mask)`, `url(#${uniqueRevealMaskId})`);
+
+    // increment counter
+    state.svgMaskIdCounter = (state.svgMaskIdCounter + 1) % 9; // at a time, there can only be a max of 9 SVGs on web page
+
+    // set animation
+    if(state.isXturn) {
+        const $xSvgLine1 = $svg.querySelector(".x-svg-line-1");
+        $xSvgLine1.style.animation = "draw 0.3s ease-in-out forwards";
+        const $xSvgLine2 = $svg.querySelector(".x-svg-line-2");
+        $xSvgLine2.style.animation = "draw 0.3s ease-in-out 0.3s forwards";
+
+        $xSvgLine2.onanimationend = () => $svg.remove();
+    } else {
+        const $oSvgPath = $svg.querySelector(".o-svg-path");
+        $oSvgPath.style.animation = "draw 1s ease-in-out forwards";
+
+        $oSvgPath.onanimationend = () => $svg.remove();
+    }
+}
+
 // --- handlers ---
 export const xToggle = (event) => {
     toggleSound.play();

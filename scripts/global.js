@@ -28,6 +28,7 @@ export const difficulties = ["dynamic", "easy", "medium", "impossible"];
 // state
 export const state = {
     grid: grid,
+    svgMaskIdCounter: 0,
     xBotDifficultyIdx: 0,
     oBotDifficultyIdx: 0,
     filledCount: 0,

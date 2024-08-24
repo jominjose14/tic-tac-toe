@@ -1,5 +1,5 @@
 import { state, toggleSound, $difficultyDialog, difficulties } from "./global.js";
-import { $playGrid } from "./grid.js";
+import {$playGrid, isCellEmpty} from "./grid.js";
 import { disable, enable, xToggle, oToggle, changeDifficulty, doReset, toggleTheme } from "./util.js";
 import { play } from "./game.js";
 
@@ -73,6 +73,7 @@ const attachCellListeners = () => {
     $cells.forEach(($cell) => {
         $cell.addEventListener("click", () => {
             disable($playGrid);
+            $cell.style.backgroundColor = "var(--cell-bg-color)";
             play($cell);
 
             if ((state.isXturn && state.isXbot) || (!state.isXturn && state.isObot)) {
@@ -85,13 +86,17 @@ const attachCellListeners = () => {
         });
 
         $cell.addEventListener("mouseenter", () => {
-            if ($cell.textContent !== "") return;
+            if (!isCellEmpty($cell)) return;
             $cell.style.backgroundColor = "var(--cell-hover-bg-color)";
         });
 
-        const revertCellBackground = () => ($cell.style.backgroundColor = "var(--cell-bg-color)");
-        $cell.addEventListener("mouseleave", revertCellBackground);
-        $cell.addEventListener("touchend", revertCellBackground);
+        $cell.addEventListener("mouseleave", () => {
+            $cell.style.backgroundColor = "var(--cell-bg-color)";
+        });
+
+        $cell.addEventListener("touchend", () => {
+            $cell.style.backgroundColor = "var(--cell-bg-color)";
+        });
     });
 };
 
