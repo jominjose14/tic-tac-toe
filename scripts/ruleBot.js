@@ -210,7 +210,7 @@ const ruleBot = (difficultyIdx) => {
     const myWinningMove = findWinningMove(board, me);
     if(myWinningMove !== null) return myWinningMove;
 
-    if (difficultyIdx === 1 && Math.random() <= 0.5) return randElement(emptyCells); // limits easy ruleBot's intelligence to thinking about case 2 only 50% of the time
+    if (difficultyIdx === 1 && Math.random() <= 0.5) return randElement(emptyCells); // Soft-limit: limits easy ruleBot's intelligence to thinking about case 2 only 50% of the time
 
     // Case-2: prevent your winning move
     const yourWinningMove = findWinningMove(board, you);
