@@ -10,50 +10,55 @@ const didPlayerWin = (board, player) => {
     return (board[row][0] === player && board[row][1] === player && board[row][2] === player) || (board[0][col] === player && board[1][col] === player && board[2][col] === player) || (board[0][0] === player && board[1][1] === player && board[2][2] === player) || (board[0][2] === player && board[1][1] === player && board[2][0] === player);
 };
 
-// returns an object of shape { cell: {row,col}, score } for non-leaf nodes and an object of shape { score } for leaf nodes (when next move leads to gameover) of the game tree
+// returns max score value (score from move played on cell that leads to the best outcome for me) when player = me and min score value (score from move played on cell that leads to the best outcome for you) when player = you
 const treeSearch = (board, player, depth) => {
     const cells = findEmptyCells(board);
 
     // early return if at a leaf node of the game tree (base case of recursion)
     if (didPlayerWin(board, me)) {
-        return { score: reward - depth };
+        return reward - depth;
     } else if (didPlayerWin(board, you)) {
-        return { score: depth - reward };
+        return depth - reward;
     } else if (cells.length === 0) {
-        return { score: 0 };
+        return 0;
     }
 
-    for (let i = 0; i < cells.length; i++) {
-        board[cells[i].row][cells[i].col] = player; // make a move on empty cell
-        lastBoardMove.row = cells[i].row;
-        lastBoardMove.col = cells[i].col;
+    let extremeScore = player === me ? -Infinity : Infinity;
+    for (const cell of cells) {
+        board[cell.row][cell.col] = player; // make a move on empty cell
+        lastBoardMove.row = cell.row;
+        lastBoardMove.col = cell.col;
 
-        const result = treeSearch(board, player === me ? you : me, depth + 1); // find chosen cell (cell with max score for me, cell with min score for you)
-        cells[i].score = result.score;
+        const score = treeSearch(board, player === me ? you : me, depth + 1);
+        extremeScore = player === me ? Math.max(extremeScore, score) : Math.min(extremeScore, score);
 
-        board[cells[i].row][cells[i].col] = empty; // revert move
+        board[cell.row][cell.col] = empty; // revert move
     }
 
-    let chosenCell = cells[0];
-
-    if (player === me) {
-        let maxScore = cells[0].score;
-        for (const cell of cells) maxScore = Math.max(maxScore, cell.score);
-        const maxScoreCells = cells.filter((cell) => cell.score === maxScore);
-        chosenCell = randElement(maxScoreCells);
-    } else if (player === you) {
-        let minScore = cells[0].score;
-        for (const cell of cells) minScore = Math.min(minScore, cell.score);
-        const minScoreCells = cells.filter((cell) => cell.score === minScore);
-        chosenCell = randElement(minScoreCells);
-    }
-
-    return chosenCell;
+    return extremeScore;
 };
 
 const treeBot = () => {
     const board = buildBoard();
-    const chosenCell = treeSearch(board, me, 0);
+    const cells = findEmptyCells(board);
+    let maxScore = -Infinity;
+    let chosenCell = null;
+    const depth = 0;
+
+    // handle depth=0 treeSearch call
+    for(const cell of cells) {
+        board[cell.row][cell.col] = me; // make a move on empty cell
+        lastBoardMove.row = cell.row;
+        lastBoardMove.col = cell.col;
+
+        cell.score = treeSearch(board, you, depth + 1);
+        maxScore = Math.max(maxScore, cell.score);
+
+        board[cell.row][cell.col] = empty; // revert move
+    }
+
+    const maxScoreCells = cells.filter((cell) => cell.score === maxScore);
+    chosenCell = randElement(maxScoreCells);
     return chosenCell;
 };
 
